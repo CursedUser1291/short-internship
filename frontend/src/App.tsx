@@ -1,19 +1,20 @@
-import { CssVarsProvider} from "@mui/joy";
-import NavBar from "./components/NavBar.tsx";
-import StepsCard from "./components/StepsCard.tsx";
-import WaterCard from "./components/WaterCard.tsx";
-import SleepCard from "./components/SleepCard.tsx";
-import WeightCard from "./components/WeightCard.tsx";
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Sleep from "./pages/Sleep";
+import Home from "./pages/Home";
+import Steps from "./pages/Steps";
+import Water from "./pages/Water";
+import Weight from "./pages/Weight";
 
 export default function App() {
     return (
-        <CssVarsProvider>
-            <NavBar />
-            <StepsCard />
-            <WaterCard />
-            <SleepCard />
-            <WeightCard />
-        </CssVarsProvider>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="sleep" element={<Sleep />} />
+                <Route path="steps" element={<Steps />} />
+                <Route path="water" element={<Water />} />
+                <Route path="weight" element={<Weight />} />
+            </Routes>
+        </BrowserRouter>
     );
 }
