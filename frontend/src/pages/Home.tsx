@@ -1,4 +1,4 @@
-import { CssVarsProvider } from "@mui/joy";
+import {CssVarsProvider, Box} from "@mui/joy";
 import NavBar from "../components/NavBar.tsx";
 import StepsCard from "../components/StepsCard.tsx";
 import WaterCard from "../components/WaterCard.tsx";
@@ -9,14 +9,16 @@ import Greeting from "../components/Greeting.tsx";
 const Home = () => {
     return (
         <CssVarsProvider>
-            <NavBar />
-            <Greeting />
-            <StepsCard />
-            <WaterCard />
-            <SleepCard />
-            <WeightCard />
+            <Box sx={{marginTop:'70px'}}>
+                <NavBar />
+                <Greeting />
+                <StepsCard />
+                <WaterCard />
+                <SleepCard />
+                <WeightCard />
+            </Box>
         </CssVarsProvider>
     );
-}
+};
 
 export default Home;
