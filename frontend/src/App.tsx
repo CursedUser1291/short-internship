@@ -5,6 +5,7 @@ import Steps from "./pages/Steps";
 import Water from "./pages/Water";
 import Weight from "./pages/Weight";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Layout from "../src/Layout.tsx";
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
                     <Route path="water" element={<Water />} />
                     <Route path="weight" element={<Weight />} />
                     <Route path="login" element={<Login />} />
+                    <Route path="register" element={<Register />} />
                 </Route>
             </Routes>
         </BrowserRouter>

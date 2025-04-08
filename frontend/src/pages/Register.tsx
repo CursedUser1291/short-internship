@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Container } from '@mui/material';
 
-const Login = () => {
-    const [username, setUsername] = useState('');
+const Register = () => {
+    const [username, setUsername] = useState('')
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('')
 
-    const handleLogin = (event: React.FormEvent) => {
-        event.preventDefault();
-        console.log('Logging in with', { username, password });
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (password !== confirmPassword) {
+            setError('Passwords do not match!');
+            return;
+        }
+        setError('');
     };
 
     return (
@@ -22,11 +29,11 @@ const Login = () => {
             }}
         >
             <Typography variant="h4" gutterBottom>
-                Login to Your Account
+                Register an Account
             </Typography>
             <Box
                 component="form"
-                onSubmit={handleLogin}
+                onSubmit={handleSubmit}
                 sx={{
                     width: '100%',
                     backgroundColor: 'white',
@@ -53,6 +60,22 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
+                <TextField
+                    label="Password"
+                    type="password"
+                    fullWidth
+                    margin="normal"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                />
+
+                {error && (
+                    <Typography sx={{ color: 'red', fontSize: '14px' }}>
+                        {error}
+                    </Typography>
+                )}
+
                 <Button
                     type="submit"
                     fullWidth
@@ -65,14 +88,11 @@ const Login = () => {
                         },
                     }}
                 >
-                    Login
+                    Register
                 </Button>
             </Box>
-            <Typography variant="body2" sx={{ mt: 2 }}>
-                Don't have an account? <a href="/register">Sign up</a>
-            </Typography>
         </Container>
     );
 };
 
-export default Login;
+export default Register;
