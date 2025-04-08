@@ -1,8 +1,9 @@
 import MetricCard from "./MetricCardProps.tsx";
+import DailyGoals from "../enums/DailyGoals.ts"
 
 const amountDone = 8
 const goal = 7.8
-const daily = 8
+const daily = DailyGoals.SLEEP
 
 const SleepCard = () => {
     return (

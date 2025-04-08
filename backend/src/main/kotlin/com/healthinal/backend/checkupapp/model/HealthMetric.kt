@@ -22,5 +22,9 @@ data class HealthMetric(
     val weight: String? = null,
     val weightGoal: String? = null,
 
-    val date: LocalDate? = null
+    val date: LocalDate? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    val user: User? = null
 )

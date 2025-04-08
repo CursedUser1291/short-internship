@@ -21,27 +21,27 @@ const MetricCard = ({
                         amountToDaily,
                     }: MetricCardProps) => {
 
-    let untilGoalText = '';
-    let untilDailyText = '';
+    let untilGoalText = ''
+    let untilDailyText = ''
 
-    const mainUnitText = mainValue !== undefined ? getUnitText(mainValue, unit) : '';
-    const goalUnitText = amountToGoal !== undefined ? getUnitText(amountToGoal, unit) : '';
-    const dailyUnitText = amountToDaily !== undefined ? getUnitText(amountToDaily, unit) : '';
+    const mainUnitText = mainValue !== undefined ? getUnitText(mainValue, unit) : ''
+    const goalUnitText = amountToGoal !== undefined ? getUnitText(amountToGoal, unit) : ''
+    const dailyUnitText = amountToDaily !== undefined ? getUnitText(amountToDaily, unit) : ''
 
     function getUnitText(value: number, unit: string) {
-        return value === 1 ? `${unit.slice(0, -1)}` : `${unit}`;
+        return value === 1 ? `${unit.slice(0, -1)}` : `${unit}`
     }
 
     if (amountToGoal !== undefined) {
         untilGoalText = amountToGoal <= 0
             ? 'Goal fulfilled!'
-            : `${amountToGoal} ${goalUnitText} left to go`;
+            : `${amountToGoal} ${goalUnitText} left to go`
     }
 
     if (amountToDaily !== undefined) {
         untilDailyText = amountToDaily <= 0
             ? 'Daily target reached!'
-            : `${amountToDaily} ${dailyUnitText} left to go`;
+            : `${amountToDaily} ${dailyUnitText} left to go`
     }
 
     return (
