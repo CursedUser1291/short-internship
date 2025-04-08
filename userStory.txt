@@ -1,0 +1,11 @@
+Als Benutzer möchte ich…
+1.	…eine übersichtliche und ansprechend gestaltete Benutzeroberfläche, damit ich meine aktuellen Gesundheitswerte auf einen Blick erfassen kann.
+2.	…meine täglichen Ziele und Messwerte einfach eintragen und aktualisieren können, um meinen Fortschritt aktiv zu verfolgen.
+3.	…täglich neue Einträge zu meinen Gesundheitsdaten (z. B. Schlaf, Schritte, Wasser, Gewicht) erstellen können.
+4.	…frühere Einträge bearbeiten oder löschen können, falls ich mich vertippt habe oder etwas nachtragen möchte.
+5.	…,dass meine Daten dauerhaft gespeichert und abrufbar sind, auch nach einem Gerätewechsel oder Neustart.
+6.	…meine Fortschritte in Form von Farbverläufen, Diagrammen oder Tages-/Wochenübersichten dargestellt bekommen, damit ich Entwicklungen leicht erkennen kann.
+7.	…motivierende Hinweise oder Erinnerungen erhalten, wenn ich z. B. zu wenig trinke oder schlafe.
+8.	…mit einem Chatbot über meine Gesundheit sprechen können, damit ich Tipps bekomme, wie ich meine Gewohnheiten verbessern kann.
+9.	…die Möglichkeit haben, meine eigenen Gesundheitsziele festzulegen, z. B. «mindestens 7 Stunden Schlaf» oder «2 Liter Wasser pro Tag».
+10.	… Dark Mode nutzen können, um die App angenehmer zu gestalten.

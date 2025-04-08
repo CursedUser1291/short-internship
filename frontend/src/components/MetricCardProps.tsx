@@ -1,4 +1,5 @@
-import { Card, CardContent, Typography, Box } from '@mui/joy';
+import { Add } from '@mui/icons-material';
+import { Card, CardContent, Typography, Box, IconButton } from '@mui/joy';
 
 interface MetricCardProps {
     title: string;
@@ -47,9 +48,13 @@ const MetricCard = ({
         <Card variant="outlined" sx={{ mb: 2 }}>
             <CardContent>
                 <Typography level="body-sm">{title}</Typography>
-                <Typography level="h3">
-                    {mainValue} {mainUnitText}
-                </Typography>
+                <Box display="flex" justifyContent="space-between" mt={1}>
+                    <Typography level="h3">
+                        {mainValue} {mainUnitText}
+                    </Typography>
+
+                    <IconButton><Add /></IconButton>
+                </Box>
 
                 <Box display="flex" justifyContent="space-between" mt={1}>
                     <Typography level="body-sm">
