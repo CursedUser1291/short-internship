@@ -1,5 +1,6 @@
 package com.healthinal.backend.checkupapp.controllers
 
+import com.healthinal.backend.checkupapp.model.SafeUserDTO
 import com.healthinal.backend.checkupapp.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -16,7 +17,12 @@ class UserController(
         val user = userService.login(loginRequest.username, loginRequest.password)
         return if (user != null) {
             val metrics = userService.getUserHealthMetrics(user.id)
-            ResponseEntity.ok(mapOf("user" to user))
+            val safeUser = SafeUserDTO(
+                id = user.id,
+                username = user.username,
+                healthMetrics = metrics
+            )
+            ResponseEntity.ok(mapOf("user" to safeUser))
         } else {
             ResponseEntity.status(401).body("Invalid credentials")
         }

@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.web)
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.security:spring-security-crypto:6.1.4")
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)

@@ -3,12 +3,12 @@ import { Card, CardContent, Typography, Box, IconButton } from '@mui/joy';
 
 interface MetricCardProps {
     title: string;
-    mainValue: number;
+    mainValue: string;
     unit: string;
     goal?: string;
     recommended?: string;
-    amountToGoal?: number;
-    amountToDaily?: number;
+    amountToGoal?: string;
+    amountToDaily?: string;
 }
 
 const MetricCard = ({
@@ -24,22 +24,24 @@ const MetricCard = ({
     let untilGoalText = ''
     let untilDailyText = ''
 
-    const mainUnitText = mainValue !== undefined ? getUnitText(mainValue, unit) : ''
-    const goalUnitText = amountToGoal !== undefined ? getUnitText(amountToGoal, unit) : ''
-    const dailyUnitText = amountToDaily !== undefined ? getUnitText(amountToDaily, unit) : ''
+    const mainUnitText = mainValue !== undefined ? getUnitText(parseFloat(mainValue), unit) : ''
+    const goalUnitText = amountToGoal !== undefined ? getUnitText(parseFloat(amountToGoal), unit) : ''
+    const dailyUnitText = amountToDaily !== undefined ? getUnitText(parseFloat(amountToDaily), unit) : ''
 
     function getUnitText(value: number, unit: string) {
         return value === 1 ? `${unit.slice(0, -1)}` : `${unit}`
     }
 
     if (amountToGoal !== undefined) {
-        untilGoalText = amountToGoal <= 0
+        const amountToGoalNum = parseFloat(amountToGoal);
+        untilGoalText = amountToGoalNum <= 0
             ? 'Goal fulfilled!'
             : `${amountToGoal} ${goalUnitText} left to go`
     }
 
     if (amountToDaily !== undefined) {
-        untilDailyText = amountToDaily <= 0
+        const amountToDailyNum = parseFloat(amountToDaily);
+        untilDailyText = amountToDailyNum <= 0
             ? 'Daily target reached!'
             : `${amountToDaily} ${dailyUnitText} left to go`
     }
@@ -49,7 +51,7 @@ const MetricCard = ({
             <CardContent>
                 <Typography level="body-sm">{title}</Typography>
                 <Box display="flex" justifyContent="space-between" mt={1}>
-                    <Typography level="h3">
+                    <Typography level="h3" sx={{ fontSize: "35px" }}>
                         {mainValue} {mainUnitText}
                     </Typography>
 

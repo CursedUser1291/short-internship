@@ -1,20 +1,19 @@
 import React, {useEffect, useState} from 'react'
 import { Box, Button, TextField, Typography, Container } from '@mui/material'
-import { login } from '../context/HealthMetricsContext.ts'
 import {useNavigate} from "react-router-dom";
+import {useHealthMetrics} from "../context/HealthMetricsContext.tsx";
 
 const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const navigate = useNavigate()
-    const [user, setUser] = useState(null);
+    const { login } = useHealthMetrics();
 
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
         const user = await login(username, password)
         if (user) {
-            setUser(user)
             navigate('/')
         } else {
             setError("Login failed. Please check your credentials.")

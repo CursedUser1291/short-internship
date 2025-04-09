@@ -12,9 +12,13 @@ import java.util.*
 data class User(
     @Id
     val id: String = UUID.randomUUID().toString(),
-    val username: String? = null,
-    val password: String? = null,
+    val username: String,
+    val password: String,
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     val healthMetrics: List<HealthMetric> = mutableListOf()
-)
+) {
+    constructor() : this("","","") {
+
+    }
+}

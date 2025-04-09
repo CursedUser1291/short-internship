@@ -1,21 +1,43 @@
-import {CssVarsProvider, Box} from "@mui/joy";
-import NavBar from "../components/NavBar.tsx";
-import StepsCard from "../components/StepsCard.tsx";
-import WaterCard from "../components/WaterCard.tsx";
-import SleepCard from "../components/SleepCard.tsx";
-import WeightCard from "../components/WeightCard.tsx";
-import Greeting from "../components/Greeting.tsx";
+import { Box, CssVarsProvider } from "@mui/joy";
+import Greeting from "../components/Greeting";
+import NavBar from "../components/NavBar";
+import MetricBox from "../components/MetricBox";
 
 const Home = () => {
     return (
         <CssVarsProvider>
-            <Box sx={{marginTop:'70px'}}>
+            <Box>
                 <NavBar />
                 <Greeting />
-                <StepsCard />
-                <WaterCard />
-                <SleepCard />
-                <WeightCard />
+
+                <MetricBox
+                    title="Steps"
+                    metricKey="steps"
+                    goalKey="stepGoal"
+                    unit="steps"
+                    recommended="10000"
+                />
+                <MetricBox
+                    title="Water"
+                    metricKey="water"
+                    goalKey="waterGoal"
+                    unit="liters"
+                    recommended="2"
+                />
+                <MetricBox
+                    title="Sleep"
+                    metricKey="sleep"
+                    goalKey="sleepGoal"
+                    unit="hours"
+                    recommended="8"
+                />
+                <MetricBox
+                    title="Weight"
+                    metricKey="weight"
+                    goalKey="weightGoal"
+                    unit="kg"
+                    recommended="70"
+                />
             </Box>
         </CssVarsProvider>
     );

@@ -1,13 +1,23 @@
 import MetricCard from "./MetricCardProps.tsx";
-import DailyGoals from "../enums/DailyGoals.ts"
 
-const amountDone  = 1
-const goal = 3
-const daily = DailyGoals.WATER
-
-const toDaily = (Math.round((daily - amountDone) * 100) / 100)
+import {useHealthMetrics} from "../context/HealthMetricsContext.tsx";
 
 const WaterCard = () => {
+    const { user } = useHealthMetrics();
+    if (!user) return <div>Loading...</div>;
+
+    const latestMetric = user.healthMetrics[0];
+
+    const amountDone = latestMetric.water;
+    const goal = latestMetric.waterGoal;
+    const daily = 3.7;
+
+    const amountToDaily = (daily - parseFloat(amountDone));
+    const toDaily = (Math.round((amountToDaily) * 100) / 100)
+
+    const amountToGoal = (parseFloat(goal) - parseFloat(amountDone));
+    const toGoal = (Math.round((amountToGoal) * 100) / 100)
+
     return (
         <div>
             <MetricCard
@@ -16,8 +26,8 @@ const WaterCard = () => {
                 unit = "Litres"
                 goal ={goal.toString()}
                 recommended = {daily.toString()}
-                amountToGoal = {goal - amountDone}
-                amountToDaily = {toDaily}
+                amountToGoal = {toGoal.toString()}
+                amountToDaily = {toDaily.toString()}
             />
         </div>
     )
