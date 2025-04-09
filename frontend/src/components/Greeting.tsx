@@ -1,4 +1,5 @@
 import { Typography } from '@mui/joy';
+import {useHealthMetrics} from "../context/HealthMetricsContext.tsx";
 
 const getGreeting = (): string => {
     const hours = new Date().getHours();
@@ -13,10 +14,13 @@ const getGreeting = (): string => {
 };
 
 const MyComponent = () => {
+    const { user } = useHealthMetrics();
+    if (!user) return <div>Loading...</div>;
+
     return (
         <div style={{textAlign: 'center', margin: '20px'}}>
             <Typography level="h3" sx={{fontSize: '45px' ,marginLeft: '-200px', marginTop: 1}}>
-                {getGreeting()}
+                {getGreeting()}, {user.username}.
             </Typography>
 
             <Typography level="h3" sx={{fontSize:'30px' ,marginLeft: '200px', marginTop: 1}}>

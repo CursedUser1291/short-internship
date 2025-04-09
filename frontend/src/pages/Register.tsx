@@ -1,28 +1,21 @@
-import React, {useEffect, useState} from 'react'
-import { Box, Button, TextField, Typography, Container } from '@mui/material'
-import {useNavigate} from "react-router-dom";
-import {useHealthMetrics} from "../context/HealthMetricsContext.tsx";
+import React, { useState } from 'react';
+import { Box, Button, TextField, Typography, Container } from '@mui/material';
 
-const Login = () => {
+const Register = () => {
     const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('')
-    const navigate = useNavigate()
-    const { login } = useHealthMetrics();
 
-    const handleLogin = async (event: React.FormEvent) => {
-        event.preventDefault();
-        const user = await login(username, password)
-        if (user) {
-            navigate('/')
-        } else {
-            setError("Login failed. Please check your credentials.")
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (password !== confirmPassword) {
+            setError('Passwords do not match!');
+            return;
         }
+        setError('');
     };
-
-    useEffect(() => {
-        localStorage.setItem('loggedIn', 'false');
-    }, []);
 
     return (
         <Container
@@ -36,11 +29,11 @@ const Login = () => {
             }}
         >
             <Typography variant="h4" gutterBottom>
-                Login to Your Account
+                Register an Account
             </Typography>
             <Box
                 component="form"
-                onSubmit={handleLogin}
+                onSubmit={handleSubmit}
                 sx={{
                     width: '100%',
                     backgroundColor: 'white',
@@ -67,6 +60,22 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
+                <TextField
+                    label="Password"
+                    type="password"
+                    fullWidth
+                    margin="normal"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                />
+
+                {error && (
+                    <Typography sx={{ color: 'red', fontSize: '14px' }}>
+                        {error}
+                    </Typography>
+                )}
+
                 <Button
                     type="submit"
                     fullWidth
@@ -79,15 +88,11 @@ const Login = () => {
                         },
                     }}
                 >
-                    Login
+                    Register
                 </Button>
             </Box>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <Typography variant="body2" sx={{ mt: 2 }}>
-                Don&#39;t have an account? <a href="/register">Sign up</a>
-            </Typography>
         </Container>
     );
 };
 
-export default Login;
+export default Register;

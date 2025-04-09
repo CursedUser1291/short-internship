@@ -5,9 +5,14 @@ import { Outlet } from "react-router-dom";
 
 const Layout = () => {
     const navigate = useNavigate();
+
+    function logOut() {
+        localStorage.removeItem("user")
+        navigate('/login')
+    }
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            {/* Header */}
             <Box
                 display="flex"
                 justifyContent="space-between"
@@ -33,7 +38,7 @@ const Layout = () => {
                     CheckUp
                 </Typography>
                 <IconButton
-                    onClick={() => navigate('/login')}
+                    onClick={() => logOut()}
                     sx={{
                         marginRight: '10px',
                         '&:hover': {
