@@ -35,12 +35,12 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                     </Typography>
                     <MetricCard
                         title={title}
-                        mainValue={latestMetric?.[metricKey] ?? "0"}
+                        mainValue={latestMetric?.[metricKey]}
                         unit={unit}
-                        goal={parseInt(latestMetric?.[goalKey] ?? "8").toString()}
+                        goal={parseFloat(latestMetric?.[goalKey]).toString()}
                         recommended={dailyGoal}
-                        amountToGoal={(parseInt(latestMetric?.[goalKey] ?? "8") - parseInt(latestMetric?.[metricKey] ?? "0")).toString()}
-                        amountToDaily={(parseInt(dailyGoal) - parseInt(latestMetric?.[metricKey] ?? "0")).toString()}
+                        amountToGoal={(parseFloat(latestMetric?.[goalKey]) - parseFloat(latestMetric?.[metricKey])).toFixed(2).toString()}
+                        amountToDaily={(parseFloat(dailyGoal) - parseFloat(latestMetric?.[metricKey])).toFixed(2).toString()}
                     />
                 </>
             ) : (
@@ -60,8 +60,9 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                                 unit={unit}
                                 goal={metric[goalKey]}
                                 recommended={dailyGoal}
-                                amountToGoal={(parseInt(metric[goalKey]) - parseInt(metric[metricKey])).toString()}
-                                amountToDaily={(parseInt(dailyGoal) - parseInt(metric[metricKey])).toString()}
+                                amountToGoal={(parseFloat(metric[goalKey]) - parseFloat(metric[metricKey])).toFixed(2).toString()}
+                                amountToDaily={(parseFloat(dailyGoal) - parseFloat(metric[metricKey])).toFixed(2).toString()}
+                                date={metric.date}
                             />
                         </Box>
                     ))
