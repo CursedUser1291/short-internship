@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Container } from '@mui/material';
+import React, {useEffect, useState} from 'react'
+import { Box, Button, TextField, Typography, Container } from '@mui/material'
+import { login } from '../context/HealthMetricsContext.ts'
+import {useNavigate} from "react-router-dom";
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+    const navigate = useNavigate()
+    const [user, setUser] = useState(null);
 
-    const handleLogin = (event: React.FormEvent) => {
+    const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log('Logging in with', { username, password });
+        const user = await login(username, password)
+        if (user) {
+            setUser(user)
+            navigate('/')
+        } else {
+            setError("Login failed. Please check your credentials.")
+        }
     };
+
+    useEffect(() => {
+        localStorage.setItem('loggedIn', 'false');
+    }, []);
 
     return (
         <Container
@@ -68,8 +83,9 @@ const Login = () => {
                     Login
                 </Button>
             </Box>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <Typography variant="body2" sx={{ mt: 2 }}>
-                Don't have an account? <a href="/register">Sign up</a>
+                Don&#39;t have an account? <a href="/register">Sign up</a>
             </Typography>
         </Container>
     );

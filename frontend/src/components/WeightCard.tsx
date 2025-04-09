@@ -15,7 +15,7 @@ const WeightCard = () => {
         <div>
             <MetricCard
                 title = "Weight"
-                mainValue ={amountDone}
+                mainValue ={amountDone.toString()}
                 unit = "Kilograms"
                 goal ={goal.toString()}
                 amountToGoal = {toGoal}

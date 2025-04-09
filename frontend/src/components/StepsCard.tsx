@@ -10,7 +10,7 @@ const StepsCard = () => {
         <div>
             <MetricCard
             title = "Steps"
-            mainValue ={amountDone}
+            mainValue ={amountDone.toString()}
             unit = "Steps"
             goal ={goal.toString()}
             recommended = {daily.toString()}

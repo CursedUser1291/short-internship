@@ -1,5 +1,6 @@
 package com.healthinal.backend.checkupapp.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.util.*
@@ -26,5 +27,6 @@ data class HealthMetric(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     val user: User? = null
 )

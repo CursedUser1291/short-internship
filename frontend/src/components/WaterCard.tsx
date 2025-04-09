@@ -12,7 +12,7 @@ const WaterCard = () => {
         <div>
             <MetricCard
                 title = "Water"
-                mainValue ={amountDone}
+                mainValue ={amountDone.toString()}
                 unit = "Litres"
                 goal ={goal.toString()}
                 recommended = {daily.toString()}
