@@ -3,6 +3,7 @@ import MetricCard from "../components/MetricCardProps"
 import { useHealthMetrics } from "../context/HealthMetricsContext"
 import NavBar from "../components/NavBar"
 import NoEntryCard from "../components/NoEntryCard"
+import {useState} from "react";
 
 interface MetricPageProps {
     title: string
@@ -14,6 +15,10 @@ interface MetricPageProps {
 
 const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPageProps) => {
     const { user } = useHealthMetrics();
+    const [isModalOpen, setModalOpen] = useState(false);
+
+    const handleOpenModal = () => setModalOpen(true);
+    const handleCloseModal = () => setModalOpen(false);
 
     if (!user) return <div>Loading...</div>;
     const todayMetric = user.healthMetrics.find(metric => metric.date === new Date().toISOString().split('T')[0]);
@@ -41,10 +46,18 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                         recommended={dailyGoal}
                         amountToGoal={(parseFloat(latestMetric?.[goalKey]) - parseFloat(latestMetric?.[metricKey])).toFixed(2).toString()}
                         amountToDaily={(parseFloat(dailyGoal) - parseFloat(latestMetric?.[metricKey])).toFixed(2).toString()}
+                        isModalOpen={isModalOpen}
+                        handleOpenModal={handleOpenModal}
+                        handleCloseModal={handleCloseModal}
                     />
                 </>
             ) : (
-                <NoEntryCard title={title.toLowerCase()}/>
+                <NoEntryCard
+                    title={title.toLowerCase()}
+                    isModalOpen={isModalOpen}
+                    handleOpenModal={handleOpenModal}
+                    handleCloseModal={handleCloseModal}
+                />
             )}
 
             <Box mt={3}>
@@ -52,7 +65,7 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                     {title} History
                 </Typography>
                 {history.length > 0 ? (
-                    history.map((metric, index) => (
+                    history.slice().reverse().map((metric, index) => (
                         <Box key={index} mb={2}>
                             <MetricCard
                                 title={title}
@@ -63,6 +76,9 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                                 amountToGoal={(parseFloat(metric[goalKey]) - parseFloat(metric[metricKey])).toFixed(2).toString()}
                                 amountToDaily={(parseFloat(dailyGoal) - parseFloat(metric[metricKey])).toFixed(2).toString()}
                                 date={metric.date}
+                                isModalOpen={isModalOpen}
+                                handleOpenModal={handleOpenModal}
+                                handleCloseModal={handleCloseModal}
                             />
                         </Box>
                     ))
