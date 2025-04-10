@@ -1,9 +1,10 @@
 import { Add } from '@mui/icons-material';
 import {Card, CardContent, Typography, Box, IconButton} from '@mui/joy';
 import DateFormatter from "../util/DateFormatter";
-import axios from "axios";
 import ModalWrapper from "./ModalWrapper";
 import useModal from "../hooks/useModal";
+import { useHealthMetrics } from "../context/HealthMetricsContext";
+import {handleSubmit} from "../util/SubmitHandler.ts";
 
 interface MetricCardProps {
     title: string;
@@ -28,28 +29,12 @@ const MetricCard = ({
     amountToGoal,
     amountToDaily,
     date,
-    currentMetric,
 }: MetricCardProps & { modalMode: "add" | "update"; currentMetric: { mainValue: string; id: string; goalValue: string } | null }) => {
     const { isModalOpen, modalState, handleOpenModal, handleCloseModal } = useModal();
+    const { setUser } = useHealthMetrics();
 
-    const handleSubmit = async () => {
-        try {
-            const payload = {
-                id: currentMetric?.id,
-                mainValue: parseFloat(currentMetric?.mainValue ?? "0"),
-                goal: currentMetric?.goalValue
-            };
-
-            const response = await axios.put('/api/metrics', payload)
-
-            if (response.status === 200) {
-                handleCloseModal();
-            } else {
-                console.error('Failed to save data')
-            }
-        } catch (error) {
-            console.error('An error occurred while saving data:', error)
-        }
+    const onSubmit = async (mainValue: string, goalValue: string, userId: string) => {
+        await handleSubmit(mainValue, goalValue, userId, title, handleCloseModal, setUser);
     };
 
     let untilGoalText = ''
@@ -65,7 +50,7 @@ const MetricCard = ({
         const goalUnitText = getUnitText(amountToGoalNum, unit)
 
         if (title === "Weight" && mainValueNum > parseFloat(goal ?? "0")) {
-            amountToGoalNum = mainValueNum - parseFloat(goal ?? "0")
+            amountToGoalNum = Math.round((mainValueNum - parseFloat(goal ?? "0")) * 10) / 10;
         }
 
         untilGoalText = amountToGoalNum <= 0
@@ -121,7 +106,7 @@ const MetricCard = ({
                 title={title}
                 mode={modalState.mode}
                 currentMetric={modalState.metric}
-                onSubmit={handleSubmit}
+                onSubmit={onSubmit}
                 unit={unit}
             />
         </>

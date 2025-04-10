@@ -4,6 +4,7 @@ import { useHealthMetrics } from "../context/HealthMetricsContext"
 import NavBar from "../components/NavBar"
 import NoEntryCard from "../components/NoEntryCard"
 import {useState} from "react";
+import {calculateAmountToDaily, calculateAmountToGoal} from "../util/GoalCalculator.ts";
 
 interface MetricPageProps {
     title: string
@@ -29,26 +30,32 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
     return (
         <Box>
             <NavBar />
-            <Typography level="h4" sx={{ mb: 2 }}>
+            <Typography level="h3" sx={{ mb: 2 }}>
                 {title} Summary
             </Typography>
 
-            {latestMetric ? (
+            {latestMetric?.[metricKey] != null ? (
                 <>
                     <Typography>
                         Here you can track your {title.toLowerCase()} habits.
                     </Typography>
                     <MetricCard
                         title={title}
-                        mainValue={latestMetric?.[metricKey]}
+                        mainValue={latestMetric[metricKey]}
                         unit={unit}
-                        goal={parseFloat(latestMetric?.[goalKey]).toString()}
+                        goal={parseFloat(latestMetric[goalKey]).toString()}
                         recommended={dailyGoal}
-                        amountToGoal={(parseFloat(latestMetric?.[goalKey]) - parseFloat(latestMetric?.[metricKey])).toFixed(2).toString()}
-                        amountToDaily={(parseFloat(dailyGoal) - parseFloat(latestMetric?.[metricKey])).toFixed(2).toString()}
+                        amountToGoal={calculateAmountToGoal(latestMetric[goalKey], latestMetric[metricKey])}
+                        amountToDaily={calculateAmountToDaily(dailyGoal, latestMetric[metricKey])}
                         isModalOpen={isModalOpen}
                         handleOpenModal={handleOpenModal}
                         handleCloseModal={handleCloseModal}
+                        modalMode="update"
+                        currentMetric={{
+                            mainValue: latestMetric[metricKey],
+                            id: latestMetric.id,
+                            goalValue: latestMetric[goalKey],
+                        }}
                     />
                 </>
             ) : (
@@ -65,7 +72,7 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                     {title} History
                 </Typography>
                 {history.length > 0 ? (
-                    history.slice().reverse().map((metric, index) => (
+                    history.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((metric, index) => (
                         <Box key={index} mb={2}>
                             <MetricCard
                                 title={title}
@@ -73,12 +80,18 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                                 unit={unit}
                                 goal={metric[goalKey]}
                                 recommended={dailyGoal}
-                                amountToGoal={(parseFloat(metric[goalKey]) - parseFloat(metric[metricKey])).toFixed(2).toString()}
-                                amountToDaily={(parseFloat(dailyGoal) - parseFloat(metric[metricKey])).toFixed(2).toString()}
+                                amountToGoal={calculateAmountToGoal(metric[goalKey], metric[metricKey])}
+                                amountToDaily={calculateAmountToDaily(dailyGoal, metric[metricKey])}
                                 date={metric.date}
                                 isModalOpen={isModalOpen}
                                 handleOpenModal={handleOpenModal}
                                 handleCloseModal={handleCloseModal}
+                                modalMode="update"
+                                currentMetric={{
+                                    mainValue: latestMetric?.[metricKey] ?? "",
+                                    id: latestMetric?.id ?? "",
+                                    goalValue: latestMetric?.[goalKey] ?? "",
+                                }}
                             />
                         </Box>
                     ))

@@ -7,7 +7,7 @@ interface ModalWrapperProps {
     title: string;
     mode: "add" | "update";
     currentMetric?: { mainValue: string; goalValue: string } | null;
-    onSubmit: (mainValue: string, goalValue: string) => void;
+    onSubmit: (mainValue: string, goalValue: string, userId: string) => void;
     unit: string;
 }
 
@@ -22,6 +22,7 @@ const ModalWrapper = ({
 }: ModalWrapperProps) => {
     const [mainValue, setMainValue] = useState<string>("");
     const [goalValue, setGoalValue] = useState<string>("");
+    const userId = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : "";
 
     useEffect(() => {
         if (mode === "update" && currentMetric) {
@@ -34,9 +35,21 @@ const ModalWrapper = ({
     }, [mode, currentMetric]);
 
     const handleSubmit = () => {
-        onSubmit(mainValue, goalValue);
+        onSubmit(mainValue, goalValue, userId);
         onClose();
     };
+
+    useEffect(() => {
+        if (isOpen) {
+            if (mode === "update" && currentMetric) {
+                setMainValue(currentMetric.mainValue);
+                setGoalValue(currentMetric.goalValue);
+            } else {
+                setMainValue("");
+                setGoalValue("");
+            }
+        }
+    }, [isOpen, mode, currentMetric]);
 
     return (
         <Modal open={isOpen} onClose={onClose}>

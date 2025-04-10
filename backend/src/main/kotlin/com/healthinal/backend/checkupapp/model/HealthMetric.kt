@@ -11,17 +11,17 @@ data class HealthMetric(
     @Id
     val id: String = UUID.randomUUID().toString(),
 
-    val steps: String? = null,
-    val stepGoal: String? = null,
+    var steps: String? = null,
+    var stepGoal: String? = null,
 
-    val water: String? = null,
-    val waterGoal: String? = null,
+    var water: String? = null,
+    var waterGoal: String? = null,
 
-    val sleep: String? = null,
-    val sleepGoal: String? = null,
+    var sleep: String? = null,
+    var sleepGoal: String? = null,
 
-    val weight: String? = null,
-    val weightGoal: String? = null,
+    var weight: String? = null,
+    var weightGoal: String? = null,
 
     val date: LocalDate? = null,
 
