@@ -12,7 +12,7 @@ const useModal = () => {
         metric: null,
     });
 
-    const handleOpenModal = (mode: "add" | "update", metric?: { mainValue: string; goalValue: string }) => {
+    const handleOpenModal = (mode: "add" | "update", metric?: { mainValue: string; goalValue: string; date?: string }) => {
         setModalState({ mode, metric: metric ?? null });
         setModalOpen(true);
     };

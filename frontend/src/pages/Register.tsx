@@ -1,20 +1,39 @@
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Container } from '@mui/material';
+import React, {useEffect, useState} from 'react'
+import { Box, Button, TextField, Typography, Container } from '@mui/material'
+import {handleLogin} from "../util/AuthHandler.ts"
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
+import {useHealthMetrics} from "../context/HealthMetricsContext.tsx"
 
 const Register = () => {
     const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
     const [error, setError] = useState('')
+    const navigate = useNavigate()
+    const { login } = useHealthMetrics()
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    useEffect(() => {
+        localStorage.setItem('loggedIn', 'false')
+    }, [])
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
 
         if (password !== confirmPassword) {
-            setError('Passwords do not match!');
-            return;
+            setError('Passwords do not match!')
+            return
         }
-        setError('');
+        setError('')
+
+        try {
+            const payload = { username, password };
+            await axios.post('http://localhost:8040/api/register', payload);
+            await handleLogin(username, password, login, navigate, setError)
+        } catch (err) {
+            setError('Registration failed. Please try again.')
+            console.error(err)
+        }
     };
 
     return (

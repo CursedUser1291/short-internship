@@ -6,8 +6,8 @@ interface ModalWrapperProps {
     onClose: () => void;
     title: string;
     mode: "add" | "update";
-    currentMetric?: { mainValue: string; goalValue: string } | null;
-    onSubmit: (mainValue: string, goalValue: string) => void;
+    currentMetric?: { mainValue: string; goalValue: string, date?: string } | null;
+    onSubmit: (mainValue: string, goalValue: string, userId: string) => void;
     unit: string;
 }
 
@@ -22,6 +22,8 @@ const ModalWrapper = ({
 }: ModalWrapperProps) => {
     const [mainValue, setMainValue] = useState<string>("");
     const [goalValue, setGoalValue] = useState<string>("");
+    const [error, setError] = useState<string>("");
+    const userId = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : "";
 
     useEffect(() => {
         if (mode === "update" && currentMetric) {
@@ -34,9 +36,26 @@ const ModalWrapper = ({
     }, [mode, currentMetric]);
 
     const handleSubmit = () => {
-        onSubmit(mainValue, goalValue);
+        if (!mainValue.trim() || !goalValue.trim()) {
+            setError("Both fields are required.");
+            return;
+        }
+        setError("");
+        onSubmit(mainValue, goalValue, userId);
         onClose();
     };
+
+    useEffect(() => {
+        if (isOpen) {
+            if (mode === "update" && currentMetric) {
+                setMainValue(currentMetric.mainValue);
+                setGoalValue(currentMetric.goalValue);
+            } else {
+                setMainValue("");
+                setGoalValue("");
+            }
+        }
+    }, [isOpen, mode, currentMetric]);
 
     return (
         <Modal open={isOpen} onClose={onClose}>
@@ -78,6 +97,13 @@ const ModalWrapper = ({
                     value={goalValue}
                     onChange={(e) => setGoalValue(e.target.value)}
                 />
+
+                {error && (
+                    <Typography sx={{ color: "red", fontSize: "14px", mb: 2 }}>
+                        {error}
+                    </Typography>
+                )}
+
                 <Box display="flex" justifyContent="space-between" mt={2}>
                     <Button
                         onClick={handleSubmit}

@@ -1,42 +1,36 @@
-import { Card, CardContent, Box, Typography, IconButton } from "@mui/joy";
-import { Add } from "@mui/icons-material";
-import ModalWrapper from "./ModalWrapper";
-import axios from "axios";
+import { Card, CardContent, Box, Typography, IconButton } from "@mui/joy"
+import { Add } from "@mui/icons-material"
+import { getUnitForTitle } from "../util/UnitMapper"
+import ModalWrapper from "./ModalWrapper"
+import { handleSubmit } from "../util/SubmitHandler";
+import { useHealthMetrics } from "../context/HealthMetricsContext"
+import DateFormatter from "../util/DateFormatter.tsx";
 
 interface NoEntryCardProps {
-    title: string;
-    isModalOpen: boolean;
-    handleOpenModal: () => void;
-    handleCloseModal: () => void;
+    title: string
+    isModalOpen: boolean
+    handleOpenModal: () => void
+    handleCloseModal: () => void
+    date?: string
 }
 
-const NoEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseModal }: NoEntryCardProps) => {
-    const handleSubmit = async (mainValue: string, goalValue: string) => {
-        try {
-            const payload = {
-                mainValue: parseFloat(mainValue),
-                goal: parseFloat(goalValue),
-                title,
-                date: new Date().toISOString().split("T")[0]
-            };
+const NoEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseModal, date }: NoEntryCardProps) => {
+    const { setUser } = useHealthMetrics()
 
-            const response = await axios.post("/api/metrics", payload);
-
-            if (response.status === 200) {
-                console.log("Data saved successfully:", response.data);
-                handleCloseModal();
-            } else {
-                console.error("Failed to save data");
-            }
-        } catch (error) {
-            console.error("An error occurred while saving data:", error);
-        }
+    const onSubmit = async (mainValue: string, goalValue: string, userId: string) => {
+        const entryDate = date ?? new Date().toISOString().split("T")[0];
+        await handleSubmit(mainValue, goalValue, userId, title, entryDate, handleCloseModal, setUser);
     };
 
     return (
         <>
             <Card sx={{ mb: 2 }}>
                 <CardContent>
+                    {date && (
+                        <Typography level="body-sm" sx={{ mb: 1 }}>
+                            {DateFormatter.formatDate(date)}
+                        </Typography>
+                    )}
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Typography level="h3">
                             No new {title} entry found. Would you like to add an entry?
@@ -53,8 +47,8 @@ const NoEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseModal }: 
                 onClose={handleCloseModal}
                 title={title}
                 mode="add"
-                onSubmit={handleSubmit}
-                unit="unit" // Replace with the actual unit if available
+                onSubmit={onSubmit}
+                unit={getUnitForTitle(title)}
             />
         </>
     );
