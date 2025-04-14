@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 interface ModalState {
-    mode: "add" | "update";
+    mode: "add" | "update" | "delete";
     metric: { mainValue: string; goalValue: string } | null;
 }
 
@@ -12,7 +12,7 @@ const useModal = () => {
         metric: null,
     });
 
-    const handleOpenModal = (mode: "add" | "update", metric?: { mainValue: string; goalValue: string; date?: string }) => {
+    const handleOpenModal = (mode: "add" | "update" | "delete", metric?: { mainValue: string; goalValue: string; date?: string }) => {
         setModalState({ mode, metric: metric ?? null });
         setModalOpen(true);
     };

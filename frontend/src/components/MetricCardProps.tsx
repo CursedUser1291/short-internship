@@ -1,4 +1,4 @@
-import { Add } from '@mui/icons-material';
+import {Add, DeleteForever} from '@mui/icons-material';
 import {Card, CardContent, Typography, Box, IconButton} from '@mui/joy';
 import DateFormatter from "../util/DateFormatter";
 import ModalWrapper from "./ModalWrapper";
@@ -85,7 +85,10 @@ const MetricCard = ({
                             {mainValue} {mainUnitText}
                         </Typography>
 
+                        <div>
                         <IconButton onClick={() => handleOpenModal("update", { mainValue, goalValue: goal ?? "", date })}><Add /></IconButton>
+                            <IconButton onClick={() => handleOpenModal("delete", { mainValue, goalValue: goal ?? "", date })}><DeleteForever /></IconButton>
+                        </div>
                     </Box>
 
                     <Box display="flex" justifyContent="space-between" mt={1}>

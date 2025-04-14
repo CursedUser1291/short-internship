@@ -5,7 +5,7 @@ interface ModalWrapperProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
-    mode: "add" | "update";
+    mode: "add" | "update" | "delete";
     currentMetric?: { mainValue: string; goalValue: string, date?: string } | null;
     onSubmit: (mainValue: string, goalValue: string, userId: string) => void;
     unit: string;
@@ -70,57 +70,90 @@ const ModalWrapper = ({
                     boxShadow: 3,
                 }}
             >
-                <Typography level="h4" sx={{mb: 2}}>
-                    {mode === "add" ? `Add New Entry for ${title}` : `Update Entry for ${title}`}
-                </Typography>
+                {mode === "delete" ? (
+                    <>
+                        <Typography level="h4" sx={{ mb: 2 }}>
+                            Confirm Deletion
+                        </Typography>
+                        <Typography level="body-sm" sx={{ mb: 2 }}>
+                            Are you sure you want to delete this entry?
+                        </Typography>
+                        <Box display="flex" justifyContent="space-between" mt={2}>
+                            <Button
+                                onClick={() => {
+                                    onSubmit("", "", userId)
+                                    onClose()
+                                }}
+                                variant="solid"
+                                color="danger"
+                                sx={{
+                                    "&:hover": {
+                                        backgroundColor: "danger.dark",
+                                    },
+                                }}
+                            >
+                                Delete
+                            </Button>
+                            <Button onClick={onClose} variant="soft" color="neutral">
+                                Cancel
+                            </Button>
+                        </Box>
+                    </>
+                ) : (
+                    <>
+                        <Typography level="h4" sx={{ mb: 2 }}>
+                            {mode === "add" ? `Add New Entry for ${title}` : `Update Entry for ${title}`}
+                        </Typography>
 
-                <Typography level="body-sm" sx={{mb: 1}}>
-                    Your Entry
-                </Typography>
-                <Input
-                    placeholder={`Enter ${title} (${unit})`}
-                    type="number"
-                    fullWidth
-                    sx={{mb: 2}}
-                    value={mainValue}
-                    onChange={(e) => setMainValue(e.target.value)}
-                />
+                        <Typography level="body-sm" sx={{ mb: 1 }}>
+                            Your Entry
+                        </Typography>
+                        <Input
+                            placeholder={`Enter ${title} (${unit})`}
+                            type="number"
+                            fullWidth
+                            sx={{ mb: 2 }}
+                            value={mainValue}
+                            onChange={(e) => setMainValue(e.target.value)}
+                        />
 
-                <Typography level="body-sm" sx={{mb: 1}}>
-                    Your Daily Goal
-                </Typography>
-                <Input
-                    placeholder={`Enter Daily Goal (${unit})`}
-                    type="number"
-                    fullWidth
-                    sx={{mb: 2}}
-                    value={goalValue}
-                    onChange={(e) => setGoalValue(e.target.value)}
-                />
+                        <Typography level="body-sm" sx={{ mb: 1 }}>
+                            Your Daily Goal
+                        </Typography>
+                        <Input
+                            placeholder={`Enter Daily Goal (${unit})`}
+                            type="number"
+                            fullWidth
+                            sx={{ mb: 2 }}
+                            value={goalValue}
+                            onChange={(e) => setGoalValue(e.target.value)}
+                        />
 
-                {error && (
-                    <Typography sx={{ color: "red", fontSize: "14px", mb: 2 }}>
-                        {error}
-                    </Typography>
+                        {error && (
+                            <Typography sx={{ color: "red", fontSize: "14px", mb: 2 }}>
+                                {error}
+                            </Typography>
+                        )}
+
+                        <Box display="flex" justifyContent="space-between" mt={2}>
+                            <Button
+                                onClick={handleSubmit}
+                                variant="solid"
+                                color="primary"
+                                sx={{
+                                    "&:hover": {
+                                        backgroundColor: "primary.dark",
+                                    },
+                                }}
+                            >
+                                Submit
+                            </Button>
+                            <Button onClick={onClose} variant="soft" color="neutral">
+                                Cancel
+                            </Button>
+                        </Box>
+                    </>
                 )}
-
-                <Box display="flex" justifyContent="space-between" mt={2}>
-                    <Button
-                        onClick={handleSubmit}
-                        variant="solid"
-                        color="primary"
-                        sx={{
-                            "&:hover": {
-                                backgroundColor: "primary.dark",
-                            },
-                        }}
-                    >
-                        Submit
-                    </Button>
-                    <Button onClick={onClose} variant="soft" color="neutral">
-                        Cancel
-                    </Button>
-                </Box>
             </Box>
         </Modal>
     );
