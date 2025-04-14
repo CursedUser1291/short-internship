@@ -5,6 +5,8 @@ import NavBar from "../components/NavBar"
 import NoEntryCard from "../components/NoEntryCard"
 import {useState} from "react";
 import {calculateAmountToDaily, calculateAmountToGoal} from "../util/GoalCalculator.ts";
+import HealthChart from "../components/HealthChart.tsx";
+import DateFormatter from "../util/DateFormatter.tsx";
 
 interface MetricPageProps {
     title: string
@@ -66,6 +68,27 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                     handleCloseModal={handleCloseModal}
                 />
             )}
+
+            <Box mb={1} mt={3}>
+                <Typography level="h3" sx={{ mb: 2 }}>
+                    {title} Chart
+                </Typography>
+
+                <HealthChart
+                    data={user.healthMetrics
+                        .filter(metric => metric[metricKey] != null)
+                        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                        .map(metric => ({
+                            mainValue: Number(metric[metricKey]),
+                            goal: Number(metric[goalKey]),
+                            dailyGoal: Number(dailyGoal),
+                            title: title,
+                            date: metric.date,
+                            displayDate: DateFormatter.formatDate(metric.date),
+                        }))}
+                >
+                </HealthChart>
+            </Box>
 
             <Box mt={3}>
                 <Typography level="h4" sx={{ mb: 2 }}>

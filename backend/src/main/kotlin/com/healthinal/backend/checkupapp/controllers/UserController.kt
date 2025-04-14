@@ -34,10 +34,13 @@ class UserController(
     }
 
     @PostMapping("/register")
-    fun register(@RequestBody payload: Map<String, Any>): ResponseEntity<String> {
+    fun register(@RequestBody payload: Map<String, String>): ResponseEntity<String> {
+        val username = payload["username"] ?: return ResponseEntity.badRequest().body("Username is required")
+        val password = payload["password"] ?: return ResponseEntity.badRequest().body("Password is required")
+
         val newUser = User(
-            username = payload["username"] as String,
-            password = PasswordHasher.hash(payload["password"] as String),
+            username = username,
+            password = PasswordHasher.hash(password),
         )
         userRepository.save(newUser)
         return ResponseEntity.ok("User registered successfully")

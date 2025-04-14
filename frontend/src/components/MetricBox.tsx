@@ -5,6 +5,7 @@ import { useHealthMetrics } from "../context/HealthMetricsContext";
 import { DirectionsWalk, LocalDrink, Hotel, FitnessCenter } from "@mui/icons-material";
 import useModal from "../hooks/useModal.ts";
 import {calculateAmountToDaily, calculateAmountToGoal} from "../util/GoalCalculator.ts";
+import {Titles} from "../enums/Titles.ts";
 
 interface MetricBoxProps {
     title: string;
@@ -26,13 +27,13 @@ const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxPr
 
     const getIcon = (title: string) => {
         switch (title) {
-            case "Steps":
+            case Titles.STEPS:
                 return <DirectionsWalk sx={{fontSize: "40px", marginRight: "8px"}}/>;
-            case "Water":
+            case Titles.WATER:
                 return <LocalDrink sx={{fontSize: "40px", marginRight: "8px"}}/>;
-            case "Sleep":
+            case Titles.SLEEP:
                 return <Hotel sx={{fontSize: "40px", marginRight: "8px"}}/>;
-            case "Weight":
+            case Titles.WEIGHT:
                 return <FitnessCenter sx={{fontSize: "40px", marginRight: "8px"}}/>;
             default:
                 return null;

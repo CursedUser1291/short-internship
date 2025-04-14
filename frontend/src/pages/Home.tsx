@@ -2,6 +2,7 @@ import { Box, CssVarsProvider } from "@mui/joy";
 import Greeting from "../components/Greeting";
 import NavBar from "../components/NavBar";
 import MetricBox from "../components/MetricBox";
+import {Titles} from "../enums/Titles.ts";
 
 const Home = () => {
     return (
@@ -11,28 +12,28 @@ const Home = () => {
                 <Greeting />
 
                 <MetricBox
-                    title="Steps"
+                    title={Titles.STEPS}
                     metricKey="steps"
                     goalKey="stepGoal"
                     unit="steps"
                     recommended="10000"
                 />
                 <MetricBox
-                    title="Water"
+                    title={Titles.WATER}
                     metricKey="water"
                     goalKey="waterGoal"
                     unit="liters"
                     recommended="3.7"
                 />
                 <MetricBox
-                    title="Sleep"
+                    title={Titles.SLEEP}
                     metricKey="sleep"
                     goalKey="sleepGoal"
                     unit="hours"
                     recommended="8"
                 />
                 <MetricBox
-                    title="Weight"
+                    title={Titles.WEIGHT}
                     metricKey="weight"
                     goalKey="weightGoal"
                     unit="kg"

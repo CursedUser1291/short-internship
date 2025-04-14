@@ -1,4 +1,6 @@
-export const getUnitForTitle = (title: string): string => {
+type Unit = "steps" | "water" | "sleep" | "weight";
+
+export const getUnitForTitle = (title: Unit): string => {
     switch (title) {
         case "steps":
             return "steps";

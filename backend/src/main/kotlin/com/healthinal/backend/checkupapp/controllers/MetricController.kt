@@ -1,10 +1,11 @@
 package com.healthinal.backend.checkupapp.controllers
 
+import com.healthinal.backend.checkupapp.enums.Subjects
 import com.healthinal.backend.checkupapp.model.HealthMetric
 import com.healthinal.backend.checkupapp.model.SafeUserDTO
+import com.healthinal.backend.checkupapp.model.UpdateMetricDTO
 import com.healthinal.backend.checkupapp.repository.HealthMetricRepository
 import com.healthinal.backend.checkupapp.repository.UserRepository
-import java.time.LocalDate
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+
 @RestController
 @RequestMapping("/api/health-metrics")
 class MetricController (
@@ -20,50 +22,50 @@ class MetricController (
     private val userRepository: UserRepository
 ) {
     @PatchMapping
-    fun updateHealthmetric(@RequestBody payload: Map<String, Any>): ResponseEntity<String> {
-        val userId = payload["userId"] as? String ?: throw IllegalArgumentException("User ID is required")
-        val date = LocalDate.parse(payload["date"] as? String ?: throw IllegalArgumentException("Date is required"))
-        val title = payload["title"] as? String ?: throw IllegalArgumentException("Title is required")
-        val mainValue = (payload["mainValue"] as? Number)?.toDouble()
-        val goal = (payload["goal"] as? Number)?.toDouble()
-
-        val user = userRepository.findById(userId)
+    fun updateHealthmetric(@RequestBody payload: UpdateMetricDTO): ResponseEntity<String> {
+        val user = userRepository.findById(payload.userId)
             .orElseThrow { IllegalArgumentException("User not found") }
 
-        val existingMetric = healthMetricRepository.findByUserAndDate(user, date)
+        val existingMetric = healthMetricRepository.findByUserAndDate(user, payload.date)
+
+        val subject = try {
+            Subjects.valueOf(payload.title.uppercase())
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("Invalid title: ${payload.title}")
+        }
 
         if (existingMetric != null) {
-            when (title.lowercase()) {
-                "steps" -> {
-                    existingMetric.steps = updateMetricField(mainValue, isInteger = true)
-                    existingMetric.stepGoal = updateMetricField(goal, isInteger = true)
+            when (subject) {
+                Subjects.STEPS -> {
+                    existingMetric.steps = updateMetricField(payload.mainValue, isInteger = true)?.toInt()
+                    existingMetric.stepGoal = updateMetricField(payload.goal, isInteger = true)?.toInt()
                 }
-                "water" -> {
-                    existingMetric.water = updateMetricField(mainValue)
-                    existingMetric.waterGoal = updateMetricField(goal)
+                Subjects.WATER -> {
+                    existingMetric.water = updateMetricField(payload.mainValue)
+                    existingMetric.waterGoal = updateMetricField(payload.goal)
                 }
-                "sleep" -> {
-                    existingMetric.sleep = updateMetricField(mainValue)
-                    existingMetric.sleepGoal = updateMetricField(goal)
+                Subjects.SLEEP -> {
+                    existingMetric.sleep = updateMetricField(payload.mainValue)
+                    existingMetric.sleepGoal = updateMetricField(payload.goal)
                 }
-                "weight" -> {
-                    existingMetric.weight = updateMetricField(mainValue)
-                    existingMetric.weightGoal = updateMetricField(goal)
+                Subjects.WEIGHT -> {
+                    existingMetric.weight = updateMetricField(payload.mainValue)
+                    existingMetric.weightGoal = updateMetricField(payload.goal)
                 }
-                else -> throw IllegalArgumentException("Invalid title: $title")
+                else -> throw IllegalArgumentException("Invalid title: ${payload.title}")
             }
             healthMetricRepository.save(existingMetric)
         } else {
             val newMetric = HealthMetric(
-                steps = if (title.lowercase() == "steps") mainValue?.toString() else null,
-                stepGoal = if (title.lowercase() == "steps") goal?.toString() else null,
-                water = if (title.lowercase() == "water") mainValue?.toString() else null,
-                waterGoal = if (title.lowercase() == "water") goal?.toString() else null,
-                sleep = if (title.lowercase() == "sleep") mainValue?.toString() else null,
-                sleepGoal = if (title.lowercase() == "sleep") goal?.toString() else null,
-                weight = if (title.lowercase() == "weight") mainValue?.toString() else null,
-                weightGoal = if (title.lowercase() == "weight") goal?.toString() else null,
-                date = date,
+                steps = if (subject == Subjects.STEPS) payload.mainValue?.toInt() else null,
+                stepGoal = if (subject == Subjects.STEPS) payload.goal?.toInt() else null,
+                water = if (subject == Subjects.WATER) payload.mainValue else null,
+                waterGoal = if (subject == Subjects.WATER) payload.goal else null,
+                sleep = if (subject == Subjects.SLEEP) payload.mainValue else null,
+                sleepGoal = if (subject == Subjects.SLEEP) payload.goal else null,
+                weight = if (subject == Subjects.WEIGHT) payload.mainValue else null,
+                weightGoal = if (subject == Subjects.WEIGHT) payload.goal else null,
+                date = payload.date,
                 user = user
             )
             healthMetricRepository.save(newMetric)
@@ -72,12 +74,12 @@ class MetricController (
         return ResponseEntity.ok("Health metric updated successfully")
     }
 
-    private fun updateMetricField(newValue: Double?, isInteger: Boolean = false): String? {
+    private fun updateMetricField(newValue: Double?, isInteger: Boolean = false): Double? {
         return if (newValue != null) {
             if (isInteger) {
-                newValue.toInt().toString()
+                newValue.toInt().toDouble()
             } else {
-                String.format("%.1f", newValue)
+                newValue
             }
         } else {
             null
@@ -85,7 +87,7 @@ class MetricController (
     }
 
     @GetMapping("/{userId}")
-    fun getUserHealthMetrics(@PathVariable userId: String): ResponseEntity<Any> {
+    fun getUserHealthMetrics(@PathVariable userId: String): ResponseEntity<Map<String, SafeUserDTO>> {
         val user = userRepository.findById(userId)
             .orElseThrow { IllegalArgumentException("User not found") }
 

@@ -28,6 +28,7 @@ const Register = () => {
 
         try {
             const payload = { username, password };
+            console.log(payload)
             await axios.post('http://localhost:8040/api/register', payload);
             await handleLogin(username, password, login, navigate, setError)
         } catch (err) {

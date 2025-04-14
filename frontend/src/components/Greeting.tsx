@@ -13,7 +13,7 @@ const getGreeting = (): string => {
     }
 };
 
-const MyComponent = () => {
+const Greeting = () => {
     const { user } = useHealthMetrics();
     if (!user) return <div>Loading...</div>;
 
@@ -30,4 +30,4 @@ const MyComponent = () => {
     );
 };
 
-export default MyComponent;
+export default Greeting;
