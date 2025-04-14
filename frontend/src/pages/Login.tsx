@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import { Box, Button, TextField, Typography, Container } from '@mui/material'
-import {useNavigate} from "react-router-dom";
-import {useHealthMetrics} from "../context/HealthMetricsContext.tsx";
+import {useNavigate} from "react-router-dom"
+import {useHealthMetrics} from "../context/HealthMetricsContext.tsx"
+import {handleLogin} from "../util/AuthHandler.ts"
 
 const Login = () => {
     const [username, setUsername] = useState('')
@@ -10,14 +11,9 @@ const Login = () => {
     const navigate = useNavigate()
     const { login } = useHealthMetrics();
 
-    const handleLogin = async (event: React.FormEvent) => {
+    const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        const user = await login(username, password)
-        if (user) {
-            navigate('/')
-        } else {
-            setError("Login failed. Please check your credentials.")
-        }
+        handleLogin(username, password, login, navigate, setError);
     };
 
     useEffect(() => {
@@ -40,7 +36,7 @@ const Login = () => {
             </Typography>
             <Box
                 component="form"
-                onSubmit={handleLogin}
+                onSubmit={handleSubmit}
                 sx={{
                     width: '100%',
                     backgroundColor: 'white',

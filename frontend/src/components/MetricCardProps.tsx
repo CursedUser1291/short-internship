@@ -1,5 +1,10 @@
 import { Add } from '@mui/icons-material';
-import { Card, CardContent, Typography, Box, IconButton } from '@mui/joy';
+import {Card, CardContent, Typography, Box, IconButton} from '@mui/joy';
+import DateFormatter from "../util/DateFormatter";
+import ModalWrapper from "./ModalWrapper";
+import useModal from "../hooks/useModal";
+import { useHealthMetrics } from "../context/HealthMetricsContext";
+import {handleSubmit} from "../util/SubmitHandler.ts";
 
 interface MetricCardProps {
     title: string;
@@ -9,65 +14,103 @@ interface MetricCardProps {
     recommended?: string;
     amountToGoal?: string;
     amountToDaily?: string;
+    date?: string;
+    isModalOpen: boolean;
+    handleOpenModal: () => void;
+    handleCloseModal: () => void;
 }
 
 const MetricCard = ({
-                        title,
-                        mainValue,
-                        unit,
-                        goal,
-                        recommended,
-                        amountToGoal,
-                        amountToDaily,
-                    }: MetricCardProps) => {
+    title,
+    mainValue,
+    unit,
+    goal,
+    recommended,
+    amountToGoal,
+    amountToDaily,
+    date,
+}: MetricCardProps & { modalMode: "add" | "update"; currentMetric: { mainValue: string; id: string; goalValue: string } | null }) => {
+    const { isModalOpen, modalState, handleOpenModal, handleCloseModal } = useModal();
+    const { setUser } = useHealthMetrics()
+
+    const onSubmit = async (mainValue: string, goalValue: string, userId: string) => {
+        const entryDate = date ?? new Date().toISOString().split("T")[0]
+        await handleSubmit(mainValue, goalValue, userId, title, entryDate, handleCloseModal, setUser)
+    };
 
     let untilGoalText = ''
     let untilDailyText = ''
 
-    const mainUnitText = mainValue !== undefined ? getUnitText(parseFloat(mainValue), unit) : ''
-    const goalUnitText = amountToGoal !== undefined ? getUnitText(parseFloat(amountToGoal), unit) : ''
-    const dailyUnitText = amountToDaily !== undefined ? getUnitText(parseFloat(amountToDaily), unit) : ''
-
-    function getUnitText(value: number, unit: string) {
-        return value === 1 ? `${unit.slice(0, -1)}` : `${unit}`
-    }
+    const getUnitText = (value: number, unit: string) => {
+        return value === 1 ? unit.slice(0, -1) : unit
+    };
 
     if (amountToGoal !== undefined) {
-        const amountToGoalNum = parseFloat(amountToGoal);
+        let amountToGoalNum = parseFloat(amountToGoal)
+        const mainValueNum = parseFloat(mainValue)
+        const goalUnitText = getUnitText(amountToGoalNum, unit)
+
+        if (title === "Weight" && mainValueNum > parseFloat(goal ?? "0")) {
+            amountToGoalNum = Math.round((mainValueNum - parseFloat(goal ?? "0")) * 10) / 10;
+        }
+
         untilGoalText = amountToGoalNum <= 0
             ? 'Goal fulfilled!'
-            : `${amountToGoal} ${goalUnitText} left to go`
+            : `${Math.abs(amountToGoalNum)} ${goalUnitText} left to go`
     }
 
-    if (amountToDaily !== undefined) {
-        const amountToDailyNum = parseFloat(amountToDaily);
+    if (amountToDaily !== undefined && title !== "Weight") {
+        const amountToDailyNum = parseFloat(amountToDaily)
+        const dailyUnitText = getUnitText(amountToDailyNum, unit)
         untilDailyText = amountToDailyNum <= 0
             ? 'Daily target reached!'
             : `${amountToDaily} ${dailyUnitText} left to go`
     }
 
+    const mainUnitText = getUnitText(parseFloat(mainValue), unit)
+
     return (
-        <Card variant="outlined" sx={{ mb: 2 }}>
-            <CardContent>
-                <Typography level="body-sm">{title}</Typography>
-                <Box display="flex" justifyContent="space-between" mt={1}>
-                    <Typography level="h3" sx={{ fontSize: "35px" }}>
-                        {mainValue} {mainUnitText}
-                    </Typography>
+        <>
+            <Card variant="outlined" sx={{ mb: 2 }}>
+                <CardContent>
+                    {date && (
+                        <Typography level="body-sm" sx={{ mb: 1 }}>
+                            {DateFormatter.formatDate(date)}
+                        </Typography>
+                    )}
 
-                    <IconButton><Add /></IconButton>
-                </Box>
+                    <Typography level="body-sm">{title}</Typography>
+                    <Box display="flex" justifyContent="space-between" mt={1}>
+                        <Typography level="h3" sx={{ fontSize: "35px" }}>
+                            {mainValue} {mainUnitText}
+                        </Typography>
 
-                <Box display="flex" justifyContent="space-between" mt={1}>
-                    <Typography level="body-sm">
-                        {goal && <>Goal: {goal} {goalUnitText}<br />{untilGoalText}</>}
-                    </Typography>
-                    <Typography level="body-sm" textAlign="right">
-                        {recommended && <>Daily Recommended: {recommended} {dailyUnitText}<br />{untilDailyText}</>}
-                    </Typography>
-                </Box>
-            </CardContent>
-        </Card>
+                        <IconButton onClick={() => handleOpenModal("update", { mainValue, goalValue: goal ?? "", date })}><Add /></IconButton>
+                    </Box>
+
+                    <Box display="flex" justifyContent="space-between" mt={1}>
+                        <Typography level="body-sm">
+                            {goal && <>Goal: {goal} {unit}<br />{untilGoalText}</>}
+                        </Typography>
+                        {title !== "Weight" && (
+                            <Typography level="body-sm" textAlign="right">
+                                {recommended && <>Daily Recommended: {recommended} {unit}<br />{untilDailyText}</>}
+                            </Typography>
+                        )}
+                    </Box>
+                </CardContent>
+            </Card>
+
+            <ModalWrapper
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                title={title}
+                mode={modalState.mode}
+                currentMetric={modalState.metric}
+                onSubmit={onSubmit}
+                unit={unit}
+            />
+        </>
     );
 };
 

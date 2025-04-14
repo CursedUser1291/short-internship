@@ -1,5 +1,3 @@
-import DailyGoals from "../enums/DailyGoals.ts";
-
 export const metricsData = [
     { title: 'Sleep', metricKey: 'sleep', goalKey: 'sleepGoal', dailyGoal: 8, unit: 'hours' },
     { title: 'Steps', metricKey: 'steps', goalKey: 'stepGoal', dailyGoal: 10000.00, unit: 'steps' },
