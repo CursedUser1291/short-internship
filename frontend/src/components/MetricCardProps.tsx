@@ -67,11 +67,53 @@ const MetricCard = ({
             : `${amountToDaily} ${dailyUnitText} left to go`
     }
 
+    const getDangerThreshold = (title: string): number => {
+        const thresholds: { [key: string]: number } = {
+            steps: 999,
+            water: 1,
+            sleep: 1.5,
+            weight: 3.5,
+        };
+        return thresholds[title] || 1;
+    };
+
+    const getWarningThreshold = (title: string): number => {
+        const thresholds: { [key: string]: number } = {
+            steps: 999,
+            water: 0.5,
+            sleep: 0.7,
+            weight: 1.5,
+        };
+        return thresholds[title] || 1;
+    };
+
+    const getCardStyle = (mainValue: string, goal: string | undefined, title: string, getDangerThreshold: (title: string) => number, getWarningThreshold: (title: string) => number) => {
+        if (!goal) {
+            return { variant: "outlined", color: "neutral" };
+        }
+
+        const mainValueNum = parseFloat(mainValue);
+        const goalNum = parseFloat(goal);
+        const dangerThreshold = getDangerThreshold(title.toLowerCase());
+        const warningThreshold = getWarningThreshold(title.toLowerCase());
+
+        if (title.toLowerCase() === "weight" && mainValueNum > goalNum && Math.abs(mainValueNum - goalNum) > dangerThreshold) {
+            return { variant: "soft", color: "danger" };
+        } else if (Math.abs(mainValueNum - goalNum) > dangerThreshold && mainValueNum < goalNum) {
+            return { variant: "soft", color: "danger" };
+        } else if (Math.abs(mainValueNum - goalNum) > warningThreshold && mainValueNum < goalNum) {
+            return { variant: "soft", color: "warning" };
+        }
+
+        return { variant: "outlined", color: "neutral" };
+    };
+
     const mainUnitText = getUnitText(parseFloat(mainValue), unit)
+    const { variant, color } = getCardStyle(mainValue, goal, title, getDangerThreshold, getWarningThreshold);
 
     return (
         <>
-            <Card variant="outlined" sx={{ mb: 2 }}>
+            <Card variant={variant} color={color} sx={{mb: 2}}>
                 <CardContent>
                     {date && (
                         <Typography level="body-sm" sx={{ mb: 1 }}>

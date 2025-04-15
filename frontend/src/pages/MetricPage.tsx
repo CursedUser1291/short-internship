@@ -7,6 +7,7 @@ import {useState} from "react";
 import {calculateAmountToDaily, calculateAmountToGoal} from "../util/GoalCalculator.ts";
 import HealthChart from "../components/HealthChart.tsx";
 import DateFormatter from "../util/DateFormatter.tsx";
+import NoHistoryEntryCard from "../components/NoHistoryEntryCard.tsx";
 
 interface MetricPageProps {
     title: string
@@ -86,8 +87,7 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                             date: metric.date,
                             displayDate: DateFormatter.formatDate(metric.date),
                         }))}
-                >
-                </HealthChart>
+                />
             </Box>
 
             <Box mt={3}>
@@ -121,12 +121,13 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                                     />
                                 </Box>
                             ) : (
-                                <NoEntryCard
+                                <NoHistoryEntryCard
                                     key={index}
                                     title={title.toLowerCase()}
                                     isModalOpen={isModalOpen}
                                     handleOpenModal={handleOpenModal}
                                     handleCloseModal={handleCloseModal}
+                                    date={metric.date}
                                 />
                             )
                         )

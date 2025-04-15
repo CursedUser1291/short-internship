@@ -36,7 +36,7 @@ const ModalWrapper = ({
     }, [mode, currentMetric]);
 
     const handleSubmit = () => {
-        if (!String(mainValue).trim() || !goalValue.trim()) {
+        if (!String(mainValue).trim() || !String(goalValue).trim()) {
             setError("Both fields are required.");
             return;
         }
