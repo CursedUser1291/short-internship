@@ -57,6 +57,10 @@ const ModalWrapper = ({
         }
     }, [isOpen, mode, currentMetric]);
 
+    const addWater = (water: number) => {
+        setMainValue((prev) => (Math.round((Number(prev) + water) * 10) / 10).toString())
+    }
+
     return (
         <Modal open={isOpen} onClose={onClose}>
             <Box
@@ -152,6 +156,22 @@ const ModalWrapper = ({
                                 Cancel
                             </Button>
                         </Box>
+
+                        {title === "Water" ? (
+                            <Box>
+                                <Typography level="body-sm" sx={{ mt: 3 }}>
+                                    Quickly add values by pressing the buttons below.
+                                </Typography>
+                                <Box display="flex" justifyContent="space-between" mt={2}>
+                                    <Button variant="soft" onClick={() => addWater(0.2)}>200 ml</Button>
+                                    <Button variant="soft" onClick={() => addWater(0.3)}>300 ml</Button>
+                                    <Button variant="soft" onClick={() => addWater(0.5)}>500 ml</Button>
+                                </Box>
+                            </Box>
+                        ) : (
+                            <div />
+                        )
+                        }
                     </>
                 )}
             </Box>

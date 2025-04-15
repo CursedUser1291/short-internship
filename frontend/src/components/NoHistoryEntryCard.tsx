@@ -4,7 +4,6 @@ import { getUnitForTitle } from "../util/UnitMapper"
 import ModalWrapper from "./ModalWrapper"
 import { handleSubmit } from "../util/SubmitHandler";
 import { useHealthMetrics } from "../context/HealthMetricsContext"
-import DateFormatter from "../util/DateFormatter.tsx";
 
 interface NoEntryCardProps {
     title: string
@@ -27,7 +26,7 @@ const NoHistoryEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseMo
                 <CardContent>
                     {date && (
                         <Typography level="body-sm" sx={{ mb: 1 }}>
-                            {DateFormatter.formatDate(date)}
+                            {new Date(date).toLocaleDateString("de-DE")}
                         </Typography>
                     )}
                     <Box display="flex" justifyContent="space-between" alignItems="center">

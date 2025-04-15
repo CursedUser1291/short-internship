@@ -6,7 +6,6 @@ import NoEntryCard from "../components/NoEntryCard"
 import {useState} from "react";
 import {calculateAmountToDaily, calculateAmountToGoal} from "../util/GoalCalculator.ts";
 import HealthChart from "../components/HealthChart.tsx";
-import DateFormatter from "../util/DateFormatter.tsx";
 import NoHistoryEntryCard from "../components/NoHistoryEntryCard.tsx";
 
 interface MetricPageProps {
@@ -18,17 +17,30 @@ interface MetricPageProps {
 }
 
 const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPageProps) => {
-    const { user } = useHealthMetrics();
-    const [isModalOpen, setModalOpen] = useState(false);
+    const { user } = useHealthMetrics()
+    const [isModalOpen, setModalOpen] = useState(false)
 
-    const handleOpenModal = () => setModalOpen(true);
-    const handleCloseModal = () => setModalOpen(false);
+    const handleOpenModal = () => setModalOpen(true)
+    const handleCloseModal = () => setModalOpen(false)
 
-    if (!user) return <div>Loading...</div>;
-    const todayMetric = user.healthMetrics.find(metric => metric.date === new Date().toISOString().split('T')[0]);
-    const latestMetric = todayMetric ?? null;
+    if (!user) return <div>Loading...</div>
+    const todayMetric = user.healthMetrics.find(metric => metric.date === new Date().toISOString().split('T')[0])
+    const latestMetric = todayMetric ?? null
 
-    const history = user.healthMetrics.filter(metric => metric.date !== latestMetric?.date);
+    const history = user.healthMetrics.filter(metric => metric.date !== latestMetric?.date)
+
+    const getDatesBetween = (): string[] => {
+        const dates: string[] = history;
+        let earliestMetric = history[history.length-1];
+
+        const end = new Date(endDate);
+        while (currentDate <= end) {
+            dates.push(currentDate.toISOString().split('T')[0])
+            currentDate.setDate(currentDate.getDate() + 1)
+        }
+
+        return dates;
+    };
 
     return (
         <Box>
@@ -70,7 +82,7 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                 />
             )}
 
-            <Box mb={1} mt={3}>
+            <Box mb={10} mt={3}>
                 <Typography level="h3" sx={{ mb: 2 }}>
                     {title} Chart
                 </Typography>
@@ -85,7 +97,7 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                             dailyGoal: Number(dailyGoal),
                             title: title,
                             date: metric.date,
-                            displayDate: DateFormatter.formatDate(metric.date),
+                            displayDate: new Date(metric.date).toLocaleDateString("de-DE"),
                         }))}
                 />
             </Box>

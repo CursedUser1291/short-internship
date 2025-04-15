@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { LineChart, Line, XAxis, YAxis, Legend, Tooltip, CartesianGrid } from "recharts"
+import {LineChart, Line, XAxis, YAxis, Legend, Tooltip, CartesianGrid, ResponsiveContainer} from "recharts"
 import "@fontsource/inter"
 
 interface HealthChartProps {
@@ -26,7 +26,7 @@ const HealthChart = ({ data }: HealthChartProps) => {
     const filteredData = filterDataByTimeRange();
 
     return (
-        <div>
+        <div style={{ width: "100%", height: 400, fontFamily: "Inter"}}>
             <div style={{marginBottom: "16px"}}>
                 <label htmlFor="timeRange" style={{marginRight: "8px", fontSize: "16px", fontFamily: "Inter"}}>
                     Time Range:
@@ -50,67 +50,69 @@ const HealthChart = ({ data }: HealthChartProps) => {
                     <option value="monthly">Monthly</option>
                 </select>
             </div>
-            <LineChart width={1300} height={400} data={filteredData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#eee"/>
-                <XAxis
-                    dataKey="displayDate"
-                    tick={{fontSize: 14, fontFamily: "Inter", fill: "#555"}}
-                    axisLine={false}
-                    tickLine={false}
-                />
-                <YAxis
-                    tick={{fontSize: 14, fontFamily: "Inter", fill: "#555"}}
-                    axisLine={false}
-                    tickLine={false}
-                />
-                <Tooltip
-                    contentStyle={{
-                        fontSize: 16,
-                        fontFamily: "Inter",
-                        backgroundColor: "#f9f9f9",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                    }}
-                    itemStyle={{color: "#333"}}
-                    labelStyle={{fontWeight: "bold", color: "#555"}}
-                />
-                <Legend
-                    verticalAlign="top"
-                    height={36}
-                    wrapperStyle={{fontSize: 20, fontFamily: "Inter"}}
-                    payload={[
-                        {value: "Your Entry", type: "line", color: "#4A90E2"},
-                        {value: "Daily Recommended", type: "line", color: "#35B5AC"},
-                        {value: "Your Goal", type: "line", color: "#9013FE"},
-                    ]}
-                />
-                <Line
-                    type="linear"
-                    dataKey="mainValue"
-                    stroke="#4A90E2"
-                    strokeWidth={3}
-                    dot={{r: 4, strokeWidth: 2, fill: "#fff", stroke: "#4A90E2"}}
-                    activeDot={{r: 6}}
-                />
-                {filteredData.some((item) => item.title !== "Weight") && (
+            <ResponsiveContainer width="100%" height="100%">
+                <LineChart width={1300} height={400} data={filteredData} margin={{ right: 40}}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#eee"/>
+                    <XAxis
+                        dataKey="displayDate"
+                        tick={{fontSize: 14, fontFamily: "Inter", fill: "#555"}}
+                        axisLine={false}
+                        tickLine={false}
+                    />
+                    <YAxis
+                        tick={{fontSize: 14, fontFamily: "Inter", fill: "#555"}}
+                        axisLine={false}
+                        tickLine={false}
+                    />
+                    <Tooltip
+                        contentStyle={{
+                            fontSize: 16,
+                            fontFamily: "Inter",
+                            backgroundColor: "#f9f9f9",
+                            border: "1px solid #ccc",
+                            borderRadius: "8px",
+                        }}
+                        itemStyle={{color: "#333"}}
+                        labelStyle={{fontWeight: "bold", color: "#555"}}
+                    />
+                    <Legend
+                        verticalAlign="top"
+                        height={36}
+                        wrapperStyle={{fontSize: 20, fontFamily: "Inter"}}
+                        payload={[
+                            {value: "Your Entry", type: "line", color: "#4A90E2"},
+                            {value: "Daily Recommended", type: "line", color: "#35B5AC"},
+                            {value: "Your Goal", type: "line", color: "#9013FE"},
+                        ]}
+                    />
                     <Line
                         type="linear"
-                        dataKey="dailyGoal"
-                        stroke="#35B5AC"
+                        dataKey="mainValue"
+                        stroke="#4A90E2"
                         strokeWidth={3}
-                        dot={{r: 4, strokeWidth: 2, fill: "#fff", stroke: "#35B5AC"}}
+                        dot={{r: 4, strokeWidth: 2, fill: "#fff", stroke: "#4A90E2"}}
                         activeDot={{r: 6}}
                     />
-                )}
-                <Line
-                    type="linear"
-                    dataKey="goal"
-                    stroke="#9013FE"
-                    strokeWidth={3}
-                    dot={{r: 4, strokeWidth: 2, fill: "#fff", stroke: "#9013FE"}}
-                    activeDot={{r: 6}}
-                />
-            </LineChart>
+                    {filteredData.some((item) => item.title !== "Weight") && (
+                        <Line
+                            type="linear"
+                            dataKey="dailyGoal"
+                            stroke="#35B5AC"
+                            strokeWidth={3}
+                            dot={{r: 4, strokeWidth: 2, fill: "#fff", stroke: "#35B5AC"}}
+                            activeDot={{r: 6}}
+                        />
+                    )}
+                    <Line
+                        type="linear"
+                        dataKey="goal"
+                        stroke="#9013FE"
+                        strokeWidth={3}
+                        dot={{r: 4, strokeWidth: 2, fill: "#fff", stroke: "#9013FE"}}
+                        activeDot={{r: 6}}
+                    />
+                </LineChart>
+            </ResponsiveContainer>
         </div>
     );
 };

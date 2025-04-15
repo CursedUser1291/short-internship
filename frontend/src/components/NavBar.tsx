@@ -1,7 +1,9 @@
-import { Box, Button } from '@mui/joy';
-import { useLocation, useNavigate, Outlet } from 'react-router-dom';
+import {Box, Button } from '@mui/joy'
+import { useLocation, useNavigate, Outlet } from 'react-router-dom'
 
 const NavBar = () => {
+
+
     const buttons = [
         { label: 'Home', path: '/' },
         { label: 'Steps', path: '/steps' },

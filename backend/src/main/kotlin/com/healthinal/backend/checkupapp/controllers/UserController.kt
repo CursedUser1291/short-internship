@@ -38,6 +38,10 @@ class UserController(
         val username = payload["username"] ?: return ResponseEntity.badRequest().body("Username is required")
         val password = payload["password"] ?: return ResponseEntity.badRequest().body("Password is required")
 
+        if (userRepository.findByUsername(username) != null) {
+            return ResponseEntity.status(409).body("User already exists")
+        }
+
         val newUser = User(
             username = username,
             password = PasswordHasher.hash(password),

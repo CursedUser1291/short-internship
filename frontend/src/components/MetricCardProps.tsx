@@ -1,23 +1,22 @@
-import {Add, DeleteForever} from '@mui/icons-material';
-import {Card, CardContent, Typography, Box, IconButton} from '@mui/joy';
-import DateFormatter from "../util/DateFormatter";
-import ModalWrapper from "./ModalWrapper";
-import useModal from "../hooks/useModal";
-import { useHealthMetrics } from "../context/HealthMetricsContext";
-import {handleSubmit} from "../util/SubmitHandler.ts";
+import {Add, DeleteForever} from '@mui/icons-material'
+import {Card, CardContent, Typography, Box, IconButton} from '@mui/joy'
+import ModalWrapper from "./ModalWrapper"
+import useModal from "../hooks/useModal"
+import { useHealthMetrics } from "../context/HealthMetricsContext"
+import {handleSubmit} from "../util/SubmitHandler.ts"
 
 interface MetricCardProps {
-    title: string;
-    mainValue: string;
-    unit: string;
-    goal?: string;
-    recommended?: string;
-    amountToGoal?: string;
-    amountToDaily?: string;
-    date?: string;
-    isModalOpen: boolean;
-    handleOpenModal: () => void;
-    handleCloseModal: () => void;
+    title: string
+    mainValue: string
+    unit: string
+    goal?: string
+    recommended?: string
+    amountToGoal?: string
+    amountToDaily?: string
+    date?: string
+    isModalOpen: boolean
+    handleOpenModal: () => void
+    handleCloseModal: () => void
 }
 
 const MetricCard = ({
@@ -69,7 +68,7 @@ const MetricCard = ({
 
     const getDangerThreshold = (title: string): number => {
         const thresholds: { [key: string]: number } = {
-            steps: 999,
+            steps: 1999,
             water: 1,
             sleep: 1.5,
             weight: 3.5,
@@ -117,7 +116,7 @@ const MetricCard = ({
                 <CardContent>
                     {date && (
                         <Typography level="body-sm" sx={{ mb: 1 }}>
-                            {DateFormatter.formatDate(date)}
+                            {new Date(date).toLocaleDateString("de-DE")}
                         </Typography>
                     )}
 
@@ -128,8 +127,10 @@ const MetricCard = ({
                         </Typography>
 
                         <div>
-                        <IconButton onClick={() => handleOpenModal("update", { mainValue, goalValue: goal ?? "", date })}><Add /></IconButton>
-                            <IconButton onClick={() => handleOpenModal("delete", { mainValue, goalValue: goal ?? "", date })}><DeleteForever /></IconButton>
+                        <IconButton onClick={() => handleOpenModal("update", { mainValue, goalValue: goal ?? "", date })}
+                                    sx={{ mr: 5 }}><Add /></IconButton>
+
+                        <IconButton onClick={() => handleOpenModal("delete", { mainValue, goalValue: goal ?? "", date })}><DeleteForever /></IconButton>
                         </div>
                     </Box>
 
