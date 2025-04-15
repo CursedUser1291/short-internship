@@ -16,7 +16,7 @@ interface NoEntryCardProps {
 const NoHistoryEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseModal, date }: NoEntryCardProps) => {
     const { setUser } = useHealthMetrics()
 
-    const onSubmit = async (mainValue: string, goalValue: string, userId: string) => {
+    const onSubmit = async (mainValue: string, goalValue: string, userId: string, date: string) => {
         await handleSubmit(mainValue, goalValue, userId, title, date, handleCloseModal, setUser)
     };
 
@@ -45,7 +45,7 @@ const NoHistoryEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseMo
                 onClose={handleCloseModal}
                 title={title}
                 mode="update"
-                onSubmit={onSubmit}
+                onSubmit={(mainValue, goalValue, userId) => onSubmit(mainValue, goalValue, userId, date)}
                 unit={getUnitForTitle(title)}
             />
         </>

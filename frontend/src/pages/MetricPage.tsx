@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/joy"
+import { Box, Typography, Select, Option } from "@mui/joy"
 import MetricCard from "../components/MetricCardProps"
 import { useHealthMetrics } from "../context/HealthMetricsContext"
 import NavBar from "../components/NavBar"
@@ -7,6 +7,7 @@ import {useState} from "react";
 import {calculateAmountToDaily, calculateAmountToGoal} from "../util/GoalCalculator.ts";
 import HealthChart from "../components/HealthChart.tsx";
 import NoHistoryEntryCard from "../components/NoHistoryEntryCard.tsx";
+import {getAllMissingDates} from "../util/dateUtils.ts";
 
 interface MetricPageProps {
     title: string
@@ -19,6 +20,8 @@ interface MetricPageProps {
 const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPageProps) => {
     const { user } = useHealthMetrics()
     const [isModalOpen, setModalOpen] = useState(false)
+    const [openModals, setOpenModals] = useState<{ [key: number]: boolean }>({});
+    const [filter, setFilter] = useState<string>("");
 
     const handleOpenModal = () => setModalOpen(true)
     const handleCloseModal = () => setModalOpen(false)
@@ -28,18 +31,16 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
     const latestMetric = todayMetric ?? null
 
     const history = user.healthMetrics.filter(metric => metric.date !== latestMetric?.date)
+    history.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
-    const getDatesBetween = (): string[] => {
-        const dates: string[] = history;
-        let earliestMetric = history[history.length-1];
+    const allMissingDates = getAllMissingDates(history)
 
-        const end = new Date(endDate);
-        while (currentDate <= end) {
-            dates.push(currentDate.toISOString().split('T')[0])
-            currentDate.setDate(currentDate.getDate() + 1)
-        }
+    const handleCardOpenModal = (index: number) => {
+        setOpenModals((prev) => ({ ...prev, [index]: true }));
+    };
 
-        return dates;
+    const handleCardCloseModal = (index: number) => {
+        setOpenModals((prev) => ({ ...prev, [index]: false }));
     };
 
     return (
@@ -107,9 +108,7 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                     {title} History
                 </Typography>
                 {history.length > 0 ? (
-                    history
-                        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                        .map((metric, index) =>
+                    history.map((metric, index) =>
                             metric[metricKey] != null ? (
                                 <Box key={index} mb={2}>
                                     <MetricCard
@@ -137,14 +136,72 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                                     key={index}
                                     title={title.toLowerCase()}
                                     isModalOpen={isModalOpen}
-                                    handleOpenModal={handleOpenModal}
-                                    handleCloseModal={handleCloseModal}
+                                    handleOpenModal={() => handleCardOpenModal(index)}
+                                    handleCloseModal={() => handleCardCloseModal(index)}
                                     date={metric.date}
                                 />
                             )
                         )
                 ) : (
                     <Typography>No previous entries available.</Typography>
+                )}
+            </Box>
+
+            <Box mt={4}>
+                <Typography level="h4" sx={{ mb: 2 }}>
+                    Empty Entries
+                </Typography>
+                {allMissingDates.length > 0 ? (
+                    <>
+                        <Select
+                            placeholder="Filter by month"
+                            onChange={(event, newValue) => setFilter(newValue || "")}
+                            sx={{ mb: 2, width: 200 }}
+                        >
+                            <Option value="">All</Option>
+                            {Array.from(
+                                new Set(
+                                    allMissingDates.map(date =>
+                                        new Date(date).toLocaleString("default", { month: "long", year: "numeric" })
+                                    )
+                                )
+                            ).map((monthYear, index) => (
+                                <Option key={index} value={monthYear}>
+                                    {monthYear}
+                                </Option>
+                            ))}
+                        </Select>
+                        {Object.entries(
+                            allMissingDates.reduce((acc, date) => {
+                                const monthYear = new Date(date).toLocaleString("default", { month: "long", year: "numeric" });
+                                if (!acc[monthYear]) acc[monthYear] = [];
+                                acc[monthYear].push(date);
+                                return acc;
+                            }, {} as { [key: string]: string[] })
+                        )
+                            .filter(([monthYear]) => !filter || monthYear === filter)
+                            .map(([monthYear, dates], index) => (
+                                <Box key={index} mb={3}>
+                                    <Typography level="h4" sx={{ mb: 1 }}>
+                                        {monthYear}
+                                    </Typography>
+                                    {dates.map((date, subIndex) => (
+                                        <NoHistoryEntryCard
+                                            key={`${index}-${subIndex}`}
+                                            title={title.toLowerCase()}
+                                            isModalOpen={!!openModals[`${index}-${subIndex}`]}
+                                            handleOpenModal={() => handleCardOpenModal(`${index}-${subIndex}`)}
+                                            handleCloseModal={() => handleCardCloseModal(`${index}-${subIndex}`)}
+                                            date={date}
+                                        />
+                                    ))}
+                                </Box>
+                            ))}
+                    </>
+                ) : (
+                    <Typography level="h4" sx={{ mb: 2 }}>
+                        None fouYou&#39;re keeping up! Well done!
+                    </Typography>
                 )}
             </Box>
         </Box>
