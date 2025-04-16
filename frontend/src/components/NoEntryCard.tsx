@@ -14,12 +14,12 @@ interface NoEntryCardProps {
 
 const NoEntryCard = ({ title, date }: NoEntryCardProps) => {
     const { setUser } = useHealthMetrics()
-    const { isModalOpen, modalState, handleOpenModal, handleCloseModal } = useModal();
+    const { isModalOpen, modalState, handleOpenModal, handleCloseModal } = useModal()
 
     const onSubmit = async (mainValue: string, goalValue: string, userId: string) => {
-        const entryDate = date ?? new Date().toISOString().split("T")[0];
-        await handleSubmit(mainValue, goalValue, userId, title, entryDate, handleCloseModal, setUser);
-    };
+        const entryDate = date ?? new Date().toISOString().split("T")[0]
+        await handleSubmit(mainValue, goalValue, userId, title, entryDate, handleCloseModal, setUser)
+    }
 
     return (
         <>

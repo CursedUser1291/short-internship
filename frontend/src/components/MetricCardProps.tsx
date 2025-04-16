@@ -29,7 +29,7 @@ const MetricCard = ({
     amountToDaily,
     date,
 }: MetricCardProps & { modalMode: "add" | "update"; currentMetric: { mainValue: string; id: string; goalValue: string } | null }) => {
-    const { isModalOpen, modalState, handleOpenModal, handleCloseModal } = useModal();
+    const { isModalOpen, modalState, handleOpenModal, handleCloseModal } = useModal()
     const { setUser } = useHealthMetrics()
 
     const onSubmit = async (mainValue: string, goalValue: string, userId: string) => {
@@ -50,7 +50,7 @@ const MetricCard = ({
         const goalUnitText = getUnitText(amountToGoalNum, unit)
 
         if (title === "Weight" && mainValueNum > parseFloat(goal ?? "0")) {
-            amountToGoalNum = Math.round((mainValueNum - parseFloat(goal ?? "0")) * 10) / 10;
+            amountToGoalNum = Math.round((mainValueNum - parseFloat(goal ?? "0")) * 10) / 10
         }
 
         untilGoalText = amountToGoalNum <= 0
@@ -78,33 +78,33 @@ const MetricCard = ({
 
     const getWarningThreshold = (title: string): number => {
         const thresholds: { [key: string]: number } = {
-            steps: 999,
-            water: 0.5,
-            sleep: 0.7,
-            weight: 1.5,
+            steps: 200,
+            water: 0.3,
+            sleep: 0.3,
+            weight: 0.5,
         };
         return thresholds[title] || 1;
     };
 
     const getCardStyle = (mainValue: string, goal: string | undefined, title: string, getDangerThreshold: (title: string) => number, getWarningThreshold: (title: string) => number) => {
         if (!goal) {
-            return { variant: "outlined", color: "neutral" };
+            return { variant: "outlined", color: "neutral" }
         }
 
-        const mainValueNum = parseFloat(mainValue);
-        const goalNum = parseFloat(goal);
-        const dangerThreshold = getDangerThreshold(title.toLowerCase());
-        const warningThreshold = getWarningThreshold(title.toLowerCase());
+        const mainValueNum = parseFloat(mainValue)
+        const goalNum = parseFloat(goal)
+        const dangerThreshold = getDangerThreshold(title.toLowerCase())
+        const warningThreshold = getWarningThreshold(title.toLowerCase())
 
         if (title.toLowerCase() === "weight" && mainValueNum > goalNum && Math.abs(mainValueNum - goalNum) > dangerThreshold) {
-            return { variant: "soft", color: "danger" };
+            return { variant: "soft", color: "danger" }
         } else if (Math.abs(mainValueNum - goalNum) > dangerThreshold && mainValueNum < goalNum) {
-            return { variant: "soft", color: "danger" };
+            return { variant: "soft", color: "danger" }
         } else if (Math.abs(mainValueNum - goalNum) > warningThreshold && mainValueNum < goalNum) {
-            return { variant: "soft", color: "warning" };
+            return { variant: "soft", color: "warning" }
         }
 
-        return { variant: "outlined", color: "neutral" };
+        return { variant: "outlined", color: "neutral" }
     };
 
     const mainUnitText = getUnitText(parseFloat(mainValue), unit)
