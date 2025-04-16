@@ -1,15 +1,17 @@
 import { Box, Modal, Typography, Input, Button } from "@mui/joy";
 import { useState, useEffect } from "react";
 import {Titles} from "../enums/Titles.ts";
+import {sendGoalHitNotification} from "../util/notifications.ts";
 
 interface ModalWrapperProps {
-    isOpen: boolean;
-    onClose: () => void;
-    title: string;
-    mode: "add" | "update" | "delete";
-    currentMetric?: { mainValue: string; goalValue: string, date?: string } | null;
-    onSubmit: (mainValue: string, goalValue: string, userId: string) => void;
-    unit: string;
+    isOpen: boolean
+    onClose: () => void
+    title: string
+    mode: "add" | "update" | "delete"
+    currentMetric?: { mainValue: string; goalValue: string, date?: string } | null
+    onSubmit: (mainValue: string, goalValue: string, userId: string) => void
+    unit: string
+    date: string
 }
 
 const ModalWrapper = ({
@@ -20,46 +22,55 @@ const ModalWrapper = ({
     currentMetric,
     onSubmit,
     unit,
+    date,
 }: ModalWrapperProps) => {
-    const [mainValue, setMainValue] = useState<string>("");
-    const [goalValue, setGoalValue] = useState<string>("");
-    const [error, setError] = useState<string>("");
-    const userId = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : "";
+    const [mainValue, setMainValue] = useState<string>("")
+    const [goalValue, setGoalValue] = useState<string>("")
+    const [error, setError] = useState<string>("")
+    const userId = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : ""
 
     useEffect(() => {
         if (mode === "update" && currentMetric) {
-            setMainValue(currentMetric.mainValue);
-            setGoalValue(currentMetric.goalValue);
+            setMainValue(currentMetric.mainValue)
+            setGoalValue(currentMetric.goalValue)
         } else {
-            setMainValue("");
-            setGoalValue("");
+            setMainValue("")
+            setGoalValue("")
         }
     }, [mode, currentMetric]);
 
     const handleSubmit = () => {
         if (!String(mainValue).trim() || !String(goalValue).trim()) {
-            setError("Both fields are required.");
-            return;
+            setError("Both fields are required.")
+            return
         }
-        setError("");
-        onSubmit(mainValue, goalValue, userId);
-        onClose();
+        if (title == "Weight") {
+            if ((parseFloat(mainValue) == parseFloat(goalValue)) && date === new Date().toISOString().split("T")[0]) {
+                sendGoalHitNotification(title, goalValue, unit)
+            }
+        } else if ((parseFloat(mainValue) >= parseFloat(goalValue)) && date === new Date().toISOString().split("T")[0]) {
+            sendGoalHitNotification(title, goalValue, unit)
+        }
+
+        setError("")
+        onSubmit(mainValue, goalValue, userId)
+        onClose()
     };
 
     useEffect(() => {
         if (isOpen) {
             if (mode === "update" && currentMetric) {
-                setMainValue(currentMetric.mainValue);
-                setGoalValue(currentMetric.goalValue);
+                setMainValue(currentMetric.mainValue)
+                setGoalValue(currentMetric.goalValue)
             } else {
-                setMainValue("");
-                setGoalValue("");
+                setMainValue("")
+                setGoalValue("")
             }
         }
-    }, [isOpen, mode, currentMetric]);
+    }, [isOpen, mode, currentMetric])
 
     const addWater = (water: number) => {
-        setMainValue((prev) => (Math.round((Number(prev) + water) * 10) / 10).toString())
+        setMainValue((prev) => (Math.round((Number(prev) + water) * 100) / 100).toString())
     }
 
     return (
@@ -153,6 +164,7 @@ const ModalWrapper = ({
                             >
                                 Submit
                             </Button>
+
                             <Button onClick={onClose} variant="soft" color="neutral">
                                 Cancel
                             </Button>
@@ -165,14 +177,13 @@ const ModalWrapper = ({
                                 </Typography>
                                 <Box display="flex" justifyContent="space-between" mt={2}>
                                     <Button variant="soft" onClick={() => addWater(0.2)}>200 ml</Button>
-                                    <Button variant="soft" onClick={() => addWater(0.3)}>300 ml</Button>
+                                    <Button variant="soft" onClick={() => addWater(0.33)}>330 ml</Button>
                                     <Button variant="soft" onClick={() => addWater(0.5)}>500 ml</Button>
                                 </Box>
                             </Box>
                         ) : (
                             <div />
-                        )
-                        }
+                        )}
                     </>
                 )}
             </Box>

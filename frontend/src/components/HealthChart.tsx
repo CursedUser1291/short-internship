@@ -80,8 +80,8 @@ const HealthChart = ({ data }: HealthChartProps) => {
                         height={36}
                         wrapperStyle={{fontSize: 20, fontFamily: "Inter"}}
                         payload={[
-                            {value: "Your Entry", type: "line", color: "#4A90E2"},
                             {value: "Daily Recommended", type: "line", color: "#35B5AC"},
+                            {value: "Your Entry", type: "line", color: "#4A90E2"},
                             {value: "Your Goal", type: "line", color: "#9013FE"},
                         ]}
                     />

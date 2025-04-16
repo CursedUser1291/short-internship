@@ -49,6 +49,7 @@ const NoEntryCard = ({ title, date }: NoEntryCardProps) => {
                 currentMetric={modalState.metric}
                 onSubmit={onSubmit}
                 unit={getUnitForTitle(title)}
+                date={date ?? new Date().toISOString().split("T")[0]}
             />
         </>
     );

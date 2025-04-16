@@ -129,18 +129,17 @@ const MetricCard = ({
                         <div>
                         <IconButton onClick={() => handleOpenModal("update", { mainValue, goalValue: goal ?? "", date })}
                                     sx={{ mr: 5 }}><Add /></IconButton>
-
                         <IconButton onClick={() => handleOpenModal("delete", { mainValue, goalValue: goal ?? "", date })}><DeleteForever /></IconButton>
                         </div>
                     </Box>
 
                     <Box display="flex" justifyContent="space-between" mt={1}>
                         <Typography level="body-sm">
-                            {goal && <>Goal: {goal} {unit}<br />{untilGoalText}</>}
+                            {goal && <><b>Goal: {goal} {unit}</b><br />{untilGoalText}</>}
                         </Typography>
                         {title !== "Weight" && (
                             <Typography level="body-sm" textAlign="right">
-                                {recommended && <>Daily Recommended: {recommended} {unit}<br />{untilDailyText}</>}
+                                {recommended && <><b>Daily Recommended: {recommended} {unit}</b><br />{untilDailyText}</>}
                             </Typography>
                         )}
                     </Box>
@@ -155,6 +154,7 @@ const MetricCard = ({
                 currentMetric={modalState.metric}
                 onSubmit={onSubmit}
                 unit={unit}
+                date={date ?? new Date().toISOString().split("T")[0]}
             />
         </>
     );

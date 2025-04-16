@@ -23,7 +23,7 @@ const Home = () => {
                     metricKey="water"
                     goalKey="waterGoal"
                     unit="liters"
-                    recommended="3.7"
+                    recommended="2.8"
                 />
                 <MetricBox
                     title={Titles.SLEEP}

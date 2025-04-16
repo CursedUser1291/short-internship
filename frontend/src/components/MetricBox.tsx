@@ -1,25 +1,38 @@
-import { Box, Typography } from "@mui/joy";
-import MetricCard from "./MetricCardProps";
-import NoEntryCard from "./NoEntryCard";
-import { useHealthMetrics } from "../context/HealthMetricsContext";
-import { DirectionsWalk, LocalDrink, Hotel, FitnessCenter } from "@mui/icons-material";
-import useModal from "../hooks/useModal.ts";
-import {calculateAmountToDaily, calculateAmountToGoal} from "../util/GoalCalculator.ts";
-import {Titles} from "../enums/Titles.ts";
+import { Box, Typography } from "@mui/joy"
+import MetricCard from "./MetricCardProps"
+import NoEntryCard from "./NoEntryCard"
+import { useHealthMetrics } from "../context/HealthMetricsContext"
+import { DirectionsWalk, LocalDrink, Hotel, FitnessCenter } from "@mui/icons-material"
+import useModal from "../hooks/useModal.ts"
+import {calculateAmountToDaily, calculateAmountToGoal} from "../util/GoalCalculator.ts"
+import {Titles} from "../enums/Titles.ts"
+import ImprovementIdeas from "./ImprovementIdeas.tsx";
 
 interface MetricBoxProps {
-    title: string;
-    metricKey: string;
-    goalKey: string;
-    unit: string;
-    recommended: string;
+    title: string
+    metricKey: string
+    goalKey: string
+    unit: string
+    recommended: string
 }
 
 const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxProps) => {
-    const {user} = useHealthMetrics();
-    const { isModalOpen, handleOpenModal, handleCloseModal } = useModal();
+    const {user} = useHealthMetrics()
+    const { isModalOpen, handleOpenModal, handleCloseModal } = useModal()
 
-    if (!user) return <div>Loading...</div>;
+    if (!user) return <div>Loading...</div>
+
+    const mainValueWeek = user.healthMetrics
+        .filter((metric) => {
+            const metricDate = new Date(metric.date)
+            const sevenDaysAgo = new Date()
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+            return metricDate >= sevenDaysAgo && metricDate <= new Date()
+        })
+        .map((metric) => parseFloat(metric[metricKey]))
+        .filter((value) => !isNaN(value))
+
+    console.log(`Main Value Week: ${title}`, mainValueWeek)
 
     const todayMetric = user.healthMetrics.find(
         (metric) => metric.date === new Date().toISOString().split("T")[0]
@@ -28,18 +41,19 @@ const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxPr
     const getIcon = (title: string) => {
         switch (title) {
             case Titles.STEPS:
-                return <DirectionsWalk sx={{fontSize: "40px", marginRight: "8px"}}/>;
+                return <DirectionsWalk sx={{fontSize: "40px", marginRight: "8px"}}/>
             case Titles.WATER:
-                return <LocalDrink sx={{fontSize: "40px", marginRight: "8px"}}/>;
+                return <LocalDrink sx={{fontSize: "40px", marginRight: "8px"}}/>
             case Titles.SLEEP:
-                return <Hotel sx={{fontSize: "40px", marginRight: "8px"}}/>;
+                return <Hotel sx={{fontSize: "40px", marginRight: "8px"}}/>
             case Titles.WEIGHT:
-                return <FitnessCenter sx={{fontSize: "40px", marginRight: "8px"}}/>;
+                return <FitnessCenter sx={{fontSize: "40px", marginRight: "8px"}}/>
             default:
-                return null;
+                return null
         }
-    };
+    }
 
+    //If no entry in DB found
     if (!todayMetric) {
         return (
             <>
@@ -47,22 +61,22 @@ const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxPr
                     {getIcon(title)}
                     <Typography level="h4">{title}</Typography>
                 </Box>
+                <ImprovementIdeas  title={title} mainValues={mainValueWeek} />
                 <NoEntryCard
                     title={title.toLowerCase()}
-                    isModalOpen={isModalOpen}
-                    handleOpenModal={() => handleOpenModal("add")}
-                    handleCloseModal={handleCloseModal}
                 />
+                <ImprovementIdeas  title={title} mainValues={mainValueWeek} />
             </>
-        );
+        )
     }
 
-    const mainValue = todayMetric[metricKey];
-    const goalValue = todayMetric[goalKey];
+    const mainValue = todayMetric[metricKey]
+    const goalValue = todayMetric[goalKey]
 
-    const amountToGoal = calculateAmountToGoal(goalValue, mainValue);
-    const amountToDaily = calculateAmountToDaily(recommended, mainValue);
+    const amountToGoal = calculateAmountToGoal(goalValue, mainValue)
+    const amountToDaily = calculateAmountToDaily(recommended, mainValue)
 
+    //If entry in DB found but steps is empty
     if (todayMetric?.[metricKey] === null) {
         return (
             <>
@@ -70,22 +84,21 @@ const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxPr
                     {getIcon(title)}
                     <Typography level="h4">{title}</Typography>
                 </Box>
+                <ImprovementIdeas  title={title} mainValues={mainValueWeek} />
                 <NoEntryCard
                     title={title.toLowerCase()}
-                    isModalOpen={isModalOpen}
-                    handleOpenModal={() => handleOpenModal("add")}
-                    handleCloseModal={handleCloseModal}
                 />
             </>
-        );
+        )
     }
 
     return (
-        <Box mb={3}>
+        <Box mt={5}>
             <Box display="flex" alignItems="center" mb={1}>
                 {getIcon(title)}
                 <Typography level="h4">{title}</Typography>
             </Box>
+            <ImprovementIdeas  title={title} mainValues={mainValueWeek} />
             <MetricCard
                 title={title}
                 mainValue={mainValue}
@@ -99,7 +112,7 @@ const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxPr
                 handleCloseModal={handleCloseModal}
                 currentMetric={{id: todayMetric.id, mainValue, goalValue}} modalMode={"update"}/>
         </Box>
-    );
-};
+    )
+}
 
-export default MetricBox;
+export default MetricBox

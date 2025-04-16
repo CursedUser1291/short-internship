@@ -47,6 +47,7 @@ const NoHistoryEntryCard = ({ title, date }: NoEntryCardProps) => {
                 currentMetric={modalState.metric}
                 onSubmit={(mainValue, goalValue, userId) => onSubmit(mainValue, goalValue, userId, date)}
                 unit={getUnitForTitle(title)}
+                date={date}
             />
         </>
     );

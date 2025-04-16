@@ -20,7 +20,6 @@ interface MetricPageProps {
 const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPageProps) => {
     const { user } = useHealthMetrics()
     const [isModalOpen, setModalOpen] = useState(false)
-    const [openModals, setOpenModals] = useState<{ [key: number]: boolean }>({});
     const [filter, setFilter] = useState<string>("");
 
     const handleOpenModal = () => setModalOpen(true)
@@ -34,14 +33,6 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
     history.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
     const allMissingDates = getAllMissingDates(history)
-
-    const handleCardOpenModal = (index: number) => {
-        setOpenModals((prev) => ({ ...prev, [index]: true }));
-    };
-
-    const handleCardCloseModal = (index: number) => {
-        setOpenModals((prev) => ({ ...prev, [index]: false }));
-    };
 
     return (
         <Box>
@@ -77,9 +68,6 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
             ) : (
                 <NoEntryCard
                     title={title.toLowerCase()}
-                    isModalOpen={isModalOpen}
-                    handleOpenModal={handleOpenModal}
-                    handleCloseModal={handleCloseModal}
                 />
             )}
 
@@ -135,9 +123,6 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                                 <NoHistoryEntryCard
                                     key={index}
                                     title={title}
-                                    isModalOpen={isModalOpen}
-                                    handleOpenModal={handleOpenModal}
-                                    handleCloseModal={handleCloseModal}
                                     date={metric.date}
                                 />
                             )
@@ -189,9 +174,6 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                                         <NoHistoryEntryCard
                                             key={`${index}-${subIndex}`}
                                             title={title.toLowerCase()}
-                                            isModalOpen={!!openModals[`${index}-${subIndex}`]}
-                                            handleOpenModal={() => handleCardOpenModal(`${index}-${subIndex}`)}
-                                            handleCloseModal={() => handleCardCloseModal(`${index}-${subIndex}`)}
                                             date={date}
                                         />
                                     ))}
