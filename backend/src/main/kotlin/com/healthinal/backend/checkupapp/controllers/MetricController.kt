@@ -54,7 +54,16 @@ class MetricController (
                 }
                 else -> throw IllegalArgumentException("Invalid title: ${payload.title}")
             }
-            healthMetricRepository.save(existingMetric)
+
+            if (existingMetric.steps == null &&
+                existingMetric.water == null &&
+                existingMetric.sleep == null &&
+                existingMetric.weight == null
+                ) {
+                healthMetricRepository.delete(existingMetric)
+            } else {
+                healthMetricRepository.save(existingMetric)
+            }
         } else {
             val newMetric = HealthMetric(
                 steps = if (subject == Subjects.STEPS) payload.mainValue?.toInt() else null,

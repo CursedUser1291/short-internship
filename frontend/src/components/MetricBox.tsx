@@ -63,7 +63,6 @@ const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxPr
                 <NoEntryCard
                     title={title.toLowerCase()}
                 />
-                <ImprovementIdeas  title={title} mainValues={mainValueWeek} />
             </>
         )
     }
