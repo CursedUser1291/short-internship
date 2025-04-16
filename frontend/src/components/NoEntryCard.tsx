@@ -4,18 +4,17 @@ import { getUnitForTitle } from "../util/UnitMapper"
 import ModalWrapper from "./ModalWrapper"
 import { handleSubmit } from "../util/SubmitHandler";
 import { useHealthMetrics } from "../context/HealthMetricsContext"
+import useModal from "../hooks/useModal.ts";
 
 
 interface NoEntryCardProps {
     title: string
-    isModalOpen: boolean
-    handleOpenModal: () => void
-    handleCloseModal: () => void
     date?: string
 }
 
-const NoEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseModal, date }: NoEntryCardProps) => {
+const NoEntryCard = ({ title, date }: NoEntryCardProps) => {
     const { setUser } = useHealthMetrics()
+    const { isModalOpen, modalState, handleOpenModal, handleCloseModal } = useModal();
 
     const onSubmit = async (mainValue: string, goalValue: string, userId: string) => {
         const entryDate = date ?? new Date().toISOString().split("T")[0];
@@ -35,7 +34,7 @@ const NoEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseModal, da
                         <Typography level="h3">
                             No new {title} entry found. Would you like to add an entry?
                         </Typography>
-                        <IconButton onClick={handleOpenModal}>
+                        <IconButton onClick={() => handleOpenModal("add", { mainValue: "", goalValue: "", date })}>
                             <Add />
                         </IconButton>
                     </Box>
@@ -46,7 +45,8 @@ const NoEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseModal, da
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 title={title}
-                mode="add"
+                mode={modalState.mode}
+                currentMetric={modalState.metric}
                 onSubmit={onSubmit}
                 unit={getUnitForTitle(title)}
             />

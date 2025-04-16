@@ -4,17 +4,16 @@ import { getUnitForTitle } from "../util/UnitMapper"
 import ModalWrapper from "./ModalWrapper"
 import { handleSubmit } from "../util/SubmitHandler";
 import { useHealthMetrics } from "../context/HealthMetricsContext"
+import useModal from "../hooks/useModal.ts";
 
 interface NoEntryCardProps {
     title: string
-    isModalOpen: boolean
-    handleOpenModal: () => void
-    handleCloseModal: () => void
     date: string
 }
 
-const NoHistoryEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseModal, date }: NoEntryCardProps) => {
+const NoHistoryEntryCard = ({ title, date }: NoEntryCardProps) => {
     const { setUser } = useHealthMetrics()
+    const { isModalOpen, modalState, handleOpenModal, handleCloseModal } = useModal();
 
     const onSubmit = async (mainValue: string, goalValue: string, userId: string, date: string) => {
         await handleSubmit(mainValue, goalValue, userId, title, date, handleCloseModal, setUser)
@@ -33,7 +32,7 @@ const NoHistoryEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseMo
                         <Typography level="h3">
                             No old {title} entry found. Would you like to add an entry?
                         </Typography>
-                        <IconButton onClick={handleOpenModal}>
+                        <IconButton onClick={() => handleOpenModal("add", { mainValue: "", goalValue: "", date })}>
                             <Add />
                         </IconButton>
                     </Box>
@@ -44,7 +43,8 @@ const NoHistoryEntryCard = ({ title, isModalOpen, handleOpenModal, handleCloseMo
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 title={title}
-                mode="update"
+                mode={modalState.mode}
+                currentMetric={modalState.metric}
                 onSubmit={(mainValue, goalValue, userId) => onSubmit(mainValue, goalValue, userId, date)}
                 unit={getUnitForTitle(title)}
             />

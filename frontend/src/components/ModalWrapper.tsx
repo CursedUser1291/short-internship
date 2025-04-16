@@ -1,5 +1,6 @@
 import { Box, Modal, Typography, Input, Button } from "@mui/joy";
 import { useState, useEffect } from "react";
+import {Titles} from "../enums/Titles.ts";
 
 interface ModalWrapperProps {
     isOpen: boolean;
@@ -157,7 +158,7 @@ const ModalWrapper = ({
                             </Button>
                         </Box>
 
-                        {title === "Water" ? (
+                        {title.toLowerCase() === Titles.WATER.toLowerCase() ? (
                             <Box>
                                 <Typography level="body-sm" sx={{ mt: 3 }}>
                                     Quickly add values by pressing the buttons below.

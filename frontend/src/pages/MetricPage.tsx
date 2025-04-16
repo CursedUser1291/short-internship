@@ -134,10 +134,10 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                             ) : (
                                 <NoHistoryEntryCard
                                     key={index}
-                                    title={title.toLowerCase()}
+                                    title={title}
                                     isModalOpen={isModalOpen}
-                                    handleOpenModal={() => handleCardOpenModal(index)}
-                                    handleCloseModal={() => handleCardCloseModal(index)}
+                                    handleOpenModal={handleOpenModal}
+                                    handleCloseModal={handleCloseModal}
                                     date={metric.date}
                                 />
                             )

@@ -8,4 +8,3 @@ Als Benutzer möchte ich…
 7.	…motivierende Hinweise oder Erinnerungen erhalten, wenn ich z. B. zu wenig trinke oder schlafe.
 8.	…mit einem Chatbot über meine Gesundheit sprechen können, damit ich Tipps bekomme, wie ich meine Gewohnheiten verbessern kann.
 9.	…die Möglichkeit haben, meine eigenen Gesundheitsziele festzulegen, z. B. «mindestens 7 Stunden Schlaf» oder «2 Liter Wasser pro Tag».
-10.	… Dark Mode nutzen können, um die App angenehmer zu gestalten.
