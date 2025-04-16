@@ -8,6 +8,7 @@ import {calculateAmountToDaily, calculateAmountToGoal} from "../util/GoalCalcula
 import HealthChart from "../components/HealthChart.tsx";
 import NoHistoryEntryCard from "../components/NoHistoryEntryCard.tsx";
 import {getAllMissingDates} from "../util/dateUtils.ts";
+import CardColorGuide from "../components/CardColorGuide.tsx";
 
 interface MetricPageProps {
     title: string
@@ -40,6 +41,7 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
             <Typography level="h3" sx={{ mb: 2 }}>
                 {title} Summary
             </Typography>
+            <CardColorGuide />
 
             {latestMetric?.[metricKey] != null ? (
                 <>

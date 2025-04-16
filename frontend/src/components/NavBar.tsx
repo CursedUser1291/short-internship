@@ -1,9 +1,7 @@
 import {Box, Button } from '@mui/joy'
-import { useLocation, useNavigate, Outlet } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const NavBar = () => {
-
-
     const buttons = [
         { label: 'Home', path: '/' },
         { label: 'Steps', path: '/steps' },
@@ -12,8 +10,8 @@ const NavBar = () => {
         { label: 'Weight', path: '/weight' },
     ];
 
-    const location = useLocation();
-    const navigate = useNavigate();
+    const location = useLocation()
+    const navigate = useNavigate()
 
     return (
         <Box
@@ -39,12 +37,8 @@ const NavBar = () => {
                     {label}
                 </Button>
             ))}
-            <Box sx={{ marginLeft: 'auto' }}>
-            </Box>
-
-            <Outlet />
         </Box>
-    );
-};
+    )
+}
 
-export default NavBar;
+export default NavBar

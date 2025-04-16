@@ -1,16 +1,17 @@
-import { Box, CssVarsProvider } from "@mui/joy";
+import { Box } from "@mui/joy";
 import Greeting from "../components/Greeting";
 import NavBar from "../components/NavBar";
 import MetricBox from "../components/MetricBox";
 import {Titles} from "../enums/Titles.ts";
+import CardColorGuide from "../components/CardColorGuide.tsx";
 
 const Home = () => {
     return (
-        <CssVarsProvider>
             <Box>
                 <NavBar />
                 <Greeting />
 
+                <CardColorGuide />
                 <MetricBox
                     title={Titles.STEPS}
                     metricKey="steps"
@@ -40,8 +41,7 @@ const Home = () => {
                     recommended="70"
                 />
             </Box>
-        </CssVarsProvider>
-    );
-};
+    )
+}
 
 export default Home;

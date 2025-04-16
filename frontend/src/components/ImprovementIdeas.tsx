@@ -49,7 +49,7 @@ const ImprovementIdeas = ({ title, mainValues }: ImprovementIdeasProps) => {
 
     return (
         <Box display="flex" alignItems="center" mb={1}>
-            <Typography level="h4">{evaluateStatus()}</Typography>
+            <Typography sx={{fontSize: 20}}>{evaluateStatus()}</Typography>
         </Box>
     )
 }

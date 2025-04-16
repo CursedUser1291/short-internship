@@ -32,8 +32,6 @@ const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxPr
         .map((metric) => parseFloat(metric[metricKey]))
         .filter((value) => !isNaN(value))
 
-    console.log(`Main Value Week: ${title}`, mainValueWeek)
-
     const todayMetric = user.healthMetrics.find(
         (metric) => metric.date === new Date().toISOString().split("T")[0]
     );
@@ -41,7 +39,7 @@ const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxPr
     const getIcon = (title: string) => {
         switch (title) {
             case Titles.STEPS:
-                return <DirectionsWalk sx={{fontSize: "40px", marginRight: "8px"}}/>
+                return <DirectionsWalk sx={{fontSize: "40px", marginRight: "8px",  color: "neutral"}}/>
             case Titles.WATER:
                 return <LocalDrink sx={{fontSize: "40px", marginRight: "8px"}}/>
             case Titles.SLEEP:
@@ -98,7 +96,7 @@ const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxPr
                 {getIcon(title)}
                 <Typography level="h4">{title}</Typography>
             </Box>
-            <ImprovementIdeas  title={title} mainValues={mainValueWeek} />
+            <ImprovementIdeas  title={title} mainValues={mainValueWeek}/>
             <MetricCard
                 title={title}
                 mainValue={mainValue}
