@@ -6,20 +6,18 @@ import { handleSubmit } from "../util/SubmitHandler";
 import { useHealthMetrics } from "../context/HealthMetricsContext"
 import useModal from "../hooks/useModal.ts";
 
-
 interface NoEntryCardProps {
     title: string
-    date?: string
+    date: string
 }
 
-const NoEntryCard = ({ title, date }: NoEntryCardProps) => {
+const NoHistoryEntryCard = ({ title, date }: NoEntryCardProps) => {
     const { setUser } = useHealthMetrics()
-    const { isModalOpen, modalState, handleOpenModal, handleCloseModal } = useModal()
+    const { isModalOpen, modalState, handleOpenModal, handleCloseModal } = useModal();
 
-    const onSubmit = async (mainValue: string, goalValue: string, userId: string) => {
-        const entryDate = date ?? new Date().toISOString().split("T")[0]
-        await handleSubmit(mainValue, goalValue, userId, title, entryDate, handleCloseModal, setUser)
-    }
+    const onSubmit = async (mainValue: string, goalValue: string, userId: string, date: string) => {
+        await handleSubmit(mainValue, goalValue, userId, title, date, handleCloseModal, setUser)
+    };
 
     return (
         <>
@@ -32,7 +30,7 @@ const NoEntryCard = ({ title, date }: NoEntryCardProps) => {
                     )}
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Typography level="h3">
-                            No new {title} entry found. Would you like to add an entry?
+                            No old {title} entry found. Would you like to add an entry?
                         </Typography>
                         <IconButton onClick={() => handleOpenModal("add", { mainValue: "", goalValue: "", date })}>
                             <Add />
@@ -47,12 +45,12 @@ const NoEntryCard = ({ title, date }: NoEntryCardProps) => {
                 title={title}
                 mode={modalState.mode}
                 currentMetric={modalState.metric}
-                onSubmit={onSubmit}
+                onSubmit={(mainValue, goalValue, userId) => onSubmit(mainValue, goalValue, userId, date)}
                 unit={getUnitForTitle(title)}
-                date={date ?? new Date().toISOString().split("T")[0]}
+                date={date}
             />
         </>
     );
 };
 
-export default NoEntryCard;
+export default NoHistoryEntryCard;

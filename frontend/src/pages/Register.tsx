@@ -28,11 +28,15 @@ const Register = () => {
 
         try {
             const payload = { username, password };
+            console.log(payload)
             await axios.post('http://localhost:8040/api/register', payload);
             await handleLogin(username, password, login, navigate, setError)
-        } catch (err) {
-            setError('Registration failed. Please try again.')
-            console.error(err)
+        } catch (err: any) {
+            if (err.response && err.response.status === 409) {
+                setError('Username already exists. Please choose a different one.');
+            } else {
+                setError('Registration failed. Please try again.');
+            }
         }
     };
 

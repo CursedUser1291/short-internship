@@ -1,12 +1,14 @@
+import {units} from "../enums/units.ts";
+
 export const getUnitForTitle = (title: string): string => {
     switch (title) {
-        case "steps":
+        case units.STEPS:
             return "steps";
-        case "water":
+        case units.WATER:
             return "liters";
-        case "sleep":
+        case units.SLEEP:
             return "hours";
-        case "weight":
+        case units.WEIGHT:
             return "kg";
         default:
             return "units";

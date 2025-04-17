@@ -7,10 +7,10 @@ interface AddEntryCardProps {
 }
 
 const AddEntryCardProps = ({
-                        title,
-                        mainValueText,
-                        goalText,
-                    }: AddEntryCardProps) => {
+    title,
+    mainValueText,
+    goalText,
+}: AddEntryCardProps) => {
     return (
         <Card variant="outlined" sx={{ mb: 2 }}>
             <CardContent>

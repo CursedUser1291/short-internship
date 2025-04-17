@@ -1,14 +1,17 @@
 import { Box, Modal, Typography, Input, Button } from "@mui/joy";
 import { useState, useEffect } from "react";
+import {Titles} from "../enums/Titles.ts";
+import {sendGoalHitNotification} from "../util/notifications.ts";
 
 interface ModalWrapperProps {
-    isOpen: boolean;
-    onClose: () => void;
-    title: string;
-    mode: "add" | "update";
-    currentMetric?: { mainValue: string; goalValue: string, date?: string } | null;
-    onSubmit: (mainValue: string, goalValue: string, userId: string) => void;
-    unit: string;
+    isOpen: boolean
+    onClose: () => void
+    title: string
+    mode: "add" | "update" | "delete"
+    currentMetric?: { mainValue: string; goalValue: string, date?: string } | null
+    onSubmit: (mainValue: string, goalValue: string, userId: string) => void
+    unit: string
+    date: string
 }
 
 const ModalWrapper = ({
@@ -19,43 +22,56 @@ const ModalWrapper = ({
     currentMetric,
     onSubmit,
     unit,
+    date,
 }: ModalWrapperProps) => {
-    const [mainValue, setMainValue] = useState<string>("");
-    const [goalValue, setGoalValue] = useState<string>("");
-    const [error, setError] = useState<string>("");
-    const userId = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : "";
+    const [mainValue, setMainValue] = useState<string>("")
+    const [goalValue, setGoalValue] = useState<string>("")
+    const [error, setError] = useState<string>("")
+    const userId = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : ""
 
     useEffect(() => {
         if (mode === "update" && currentMetric) {
-            setMainValue(currentMetric.mainValue);
-            setGoalValue(currentMetric.goalValue);
+            setMainValue(currentMetric.mainValue)
+            setGoalValue(currentMetric.goalValue)
         } else {
-            setMainValue("");
-            setGoalValue("");
+            setMainValue("")
+            setGoalValue("")
         }
     }, [mode, currentMetric]);
 
     const handleSubmit = () => {
-        if (!mainValue.trim() || !goalValue.trim()) {
-            setError("Both fields are required.");
-            return;
+        if (!String(mainValue).trim() || !String(goalValue).trim()) {
+            setError("Both fields are required.")
+            return
         }
-        setError("");
-        onSubmit(mainValue, goalValue, userId);
-        onClose();
+        if (title == "Weight") {
+            if ((parseFloat(mainValue) == parseFloat(goalValue)) && date === new Date().toISOString().split("T")[0]) {
+                sendGoalHitNotification(title, goalValue, unit)
+            }
+        } else if ((parseFloat(mainValue) >= parseFloat(goalValue)) && date === new Date().toISOString().split("T")[0]) {
+            sendGoalHitNotification(title, goalValue, unit)
+        }
+
+        setError("")
+        onSubmit(mainValue, goalValue, userId)
+        onClose()
     };
 
     useEffect(() => {
         if (isOpen) {
             if (mode === "update" && currentMetric) {
-                setMainValue(currentMetric.mainValue);
-                setGoalValue(currentMetric.goalValue);
+                setMainValue(currentMetric.mainValue)
+                setGoalValue(currentMetric.goalValue)
             } else {
-                setMainValue("");
-                setGoalValue("");
+                setMainValue("")
+                setGoalValue("")
             }
         }
-    }, [isOpen, mode, currentMetric]);
+    }, [isOpen, mode, currentMetric])
+
+    const addWater = (water: number) => {
+        setMainValue((prev) => (Math.round((Number(prev) + water) * 100) / 100).toString())
+    }
 
     return (
         <Modal open={isOpen} onClose={onClose}>
@@ -70,57 +86,106 @@ const ModalWrapper = ({
                     boxShadow: 3,
                 }}
             >
-                <Typography level="h4" sx={{mb: 2}}>
-                    {mode === "add" ? `Add New Entry for ${title}` : `Update Entry for ${title}`}
-                </Typography>
+                {mode === "delete" ? (
+                    <>
+                        <Typography level="h4" sx={{ mb: 2 }}>
+                            Confirm Deletion
+                        </Typography>
+                        <Typography level="body-sm" sx={{ mb: 2 }}>
+                            Are you sure you want to delete this entry?
+                        </Typography>
+                        <Box display="flex" justifyContent="space-between" mt={2}>
+                            <Button
+                                onClick={() => {
+                                    onSubmit("", "", userId)
+                                    onClose()
+                                }}
+                                variant="solid"
+                                color="danger"
+                                sx={{
+                                    "&:hover": {
+                                        backgroundColor: "danger.dark",
+                                    },
+                                }}
+                            >
+                                Delete
+                            </Button>
+                            <Button onClick={onClose} variant="soft" color="neutral">
+                                Cancel
+                            </Button>
+                        </Box>
+                    </>
+                ) : (
+                    <>
+                        <Typography level="h4" sx={{ mb: 2 }}>
+                            {mode === "add" ? `Add New Entry for ${title}` : `Update Entry for ${title}`}
+                        </Typography>
 
-                <Typography level="body-sm" sx={{mb: 1}}>
-                    Your Entry
-                </Typography>
-                <Input
-                    placeholder={`Enter ${title} (${unit})`}
-                    type="number"
-                    fullWidth
-                    sx={{mb: 2}}
-                    value={mainValue}
-                    onChange={(e) => setMainValue(e.target.value)}
-                />
+                        <Typography level="body-sm" sx={{ mb: 1 }}>
+                            Your Entry
+                        </Typography>
+                        <Input
+                            placeholder={`Enter ${title} (${unit})`}
+                            type="number"
+                            fullWidth
+                            sx={{ mb: 2 }}
+                            value={mainValue}
+                            onChange={(e) => setMainValue(e.target.value)}
+                        />
 
-                <Typography level="body-sm" sx={{mb: 1}}>
-                    Your Daily Goal
-                </Typography>
-                <Input
-                    placeholder={`Enter Daily Goal (${unit})`}
-                    type="number"
-                    fullWidth
-                    sx={{mb: 2}}
-                    value={goalValue}
-                    onChange={(e) => setGoalValue(e.target.value)}
-                />
+                        <Typography level="body-sm" sx={{ mb: 1 }}>
+                            Your Daily Goal
+                        </Typography>
+                        <Input
+                            placeholder={`Enter Daily Goal (${unit})`}
+                            type="number"
+                            fullWidth
+                            sx={{ mb: 2 }}
+                            value={goalValue}
+                            onChange={(e) => setGoalValue(e.target.value)}
+                        />
 
-                {error && (
-                    <Typography sx={{ color: "red", fontSize: "14px", mb: 2 }}>
-                        {error}
-                    </Typography>
+                        {error && (
+                            <Typography sx={{ color: "red", fontSize: "14px", mb: 2 }}>
+                                {error}
+                            </Typography>
+                        )}
+
+                        <Box display="flex" justifyContent="space-between" mt={2}>
+                            <Button
+                                onClick={handleSubmit}
+                                variant="solid"
+                                color="primary"
+                                sx={{
+                                    "&:hover": {
+                                        backgroundColor: "primary.dark",
+                                    },
+                                }}
+                            >
+                                Submit
+                            </Button>
+
+                            <Button onClick={onClose} variant="soft" color="neutral">
+                                Cancel
+                            </Button>
+                        </Box>
+
+                        {title.toLowerCase() === Titles.WATER.toLowerCase() ? (
+                            <Box>
+                                <Typography level="body-sm" sx={{ mt: 3 }}>
+                                    Quickly add values by pressing the buttons below.
+                                </Typography>
+                                <Box display="flex" justifyContent="space-between" mt={2}>
+                                    <Button variant="soft" onClick={() => addWater(0.2)}>200 ml</Button>
+                                    <Button variant="soft" onClick={() => addWater(0.33)}>330 ml</Button>
+                                    <Button variant="soft" onClick={() => addWater(0.5)}>500 ml</Button>
+                                </Box>
+                            </Box>
+                        ) : (
+                            <div />
+                        )}
+                    </>
                 )}
-
-                <Box display="flex" justifyContent="space-between" mt={2}>
-                    <Button
-                        onClick={handleSubmit}
-                        variant="solid"
-                        color="primary"
-                        sx={{
-                            "&:hover": {
-                                backgroundColor: "primary.dark",
-                            },
-                        }}
-                    >
-                        Submit
-                    </Button>
-                    <Button onClick={onClose} variant="soft" color="neutral">
-                        Cancel
-                    </Button>
-                </Box>
             </Box>
         </Modal>
     );
