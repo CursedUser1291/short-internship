@@ -184,7 +184,7 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
                     </>
                 ) : (
                     <Typography level="h4" sx={{ mb: 2 }}>
-                        None fouYou&#39;re keeping up! Well done!
+                        None found. You&#39;re keeping up! Well done!
                     </Typography>
                 )}
             </Box>
