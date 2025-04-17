@@ -26,7 +26,7 @@ const MetricPage = ({ title, metricKey, goalKey, dailyGoal, unit }: MetricPagePr
     const handleOpenModal = () => setModalOpen(true)
     const handleCloseModal = () => setModalOpen(false)
 
-    if (!user) return <div>Loading...</div>
+    if (!user) return <div>Please Log in.</div>
     const todayMetric = user.healthMetrics.find(metric => metric.date === new Date().toISOString().split('T')[0])
     const latestMetric = todayMetric ?? null
 

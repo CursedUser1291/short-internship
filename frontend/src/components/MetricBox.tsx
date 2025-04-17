@@ -20,7 +20,7 @@ const MetricBox = ({ title, metricKey, goalKey, unit, recommended }: MetricBoxPr
     const {user} = useHealthMetrics()
     const { isModalOpen, handleOpenModal, handleCloseModal } = useModal()
 
-    if (!user) return <div>Loading...</div>
+    if (!user) return <div>Please Log in.</div>
 
     const mainValueWeek = user.healthMetrics
         .filter((metric) => {

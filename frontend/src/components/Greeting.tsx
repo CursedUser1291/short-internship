@@ -15,7 +15,7 @@ const getGreeting = (): string => {
 
 const Greeting = () => {
     const { user } = useHealthMetrics();
-    if (!user) return <div>Loading...</div>;
+    if (!user) return <div>Please Log in.</div>;
 
     return (
         <div style={{textAlign: 'center', margin: '20px'}}>
