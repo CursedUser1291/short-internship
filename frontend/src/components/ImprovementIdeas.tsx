@@ -44,7 +44,7 @@ const ImprovementIdeas = ({ title, mainValues }: ImprovementIdeasProps) => {
         }
 
         const range = ranges.find(r => averageValue >= r.min && averageValue < r.max)
-        return range ? `${intro} ${range.comment}` : "Invalid value"
+        return range ? `${intro} ${range.comment}` : ""
     };
 
     return (
