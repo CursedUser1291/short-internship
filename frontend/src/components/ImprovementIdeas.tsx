@@ -29,7 +29,7 @@ const ImprovementIdeas = ({ title, mainValues }: ImprovementIdeasProps) => {
         sleep: [
             { min: 0, max: 6, comment: `That's below the recommended amount. Try sleeping earlier.` },
             { min: 6, max: 7, comment: `That's not bad, but a bit more sleep would help.` },
-            { min: 7, max: 8, comment: `That's a healthy amount of sleep!` },
+            { min: 7, max: 8, comment: `That's an okay amount of sleep!` },
             { min: 8, max: Infinity, comment: `Excellent! Keep that sleep rhythm going.` },
         ]
     }
